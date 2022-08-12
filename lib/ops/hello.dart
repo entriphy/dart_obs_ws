@@ -1,11 +1,11 @@
 import '../protocol/enums.dart';
 import '../classes/serializable.dart';
-import 'opcodes.dart';
+import 'ops.dart';
 
 /// First message sent from the server immediately on client connection.
 /// Contains authentication information if auth is required.
 /// Also contains RPC version for version negotiation.
-class HelloOpCode extends OpCode {
+class HelloOp extends OpCode {
   String get obsWebSocketVersion => data["obsWebSocketVersion"];
   int get rpcVersion => data["rpcVersion"];
   Authentication? get authentication => data.containsKey("authentication")
@@ -15,7 +15,7 @@ class HelloOpCode extends OpCode {
   @override
   WebSocketOpCode get code => WebSocketOpCode.hello;
 
-  HelloOpCode(super.data);
+  HelloOp(super.data);
 }
 
 class Authentication extends Serializable {

@@ -1,10 +1,10 @@
 import '../protocol/enums.dart';
-import 'opcodes.dart';
+import 'ops.dart';
 
 /// Response to `Hello` message, should contain authentication string if
 /// authentication is required, along with PubSub subscriptions and other
 /// session parameters.
-class IdentifyOpCode extends OpCode {
+class IdentifyOp extends OpCode {
   int get rpcVersion => data["rpcVersion"];
   String? get authentication => data["authentication"];
   int? get eventSubscriptions => data["eventSubscriptions"];
@@ -12,8 +12,8 @@ class IdentifyOpCode extends OpCode {
   @override
   WebSocketOpCode get code => WebSocketOpCode.identify;
 
-  IdentifyOpCode(super.data);
-  IdentifyOpCode.create(
+  IdentifyOp(super.data);
+  IdentifyOp.create(
       {required int rpcVersion,
       String? authentication,
       int? eventSubscriptions})

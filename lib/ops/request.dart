@@ -1,9 +1,9 @@
 import '../protocol/enums.dart';
-import 'opcodes.dart';
+import 'ops.dart';
 
 /// Client is making a request to obs-websocket. Eg get current scene, create
 /// source.
-class RequestOpCode extends OpCode {
+class RequestOp extends OpCode {
   String get requestType => data["requestType"];
   String get requestId => data["requestId"];
   Map<String, dynamic>? get requestData => data["requestData"];
@@ -11,9 +11,11 @@ class RequestOpCode extends OpCode {
   @override
   WebSocketOpCode get code => WebSocketOpCode.request;
 
-  RequestOpCode(super.data);
-  RequestOpCode.create(String requestType, String requestId,
-      [Map<String, dynamic>? requestData])
+  RequestOp(super.data);
+  RequestOp.create(
+      {required String requestType,
+      required String requestId,
+      Map<String, dynamic>? requestData})
       : super({
           "requestType": requestType,
           "requestId": requestId,

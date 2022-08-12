@@ -1,9 +1,9 @@
 import '../protocol/enums.dart';
 
-import 'opcodes.dart';
+import 'ops.dart';
 
 /// An event coming from OBS has occured. Eg scene switched, source muted.
-class EventOpCode extends OpCode {
+class EventOp extends OpCode {
   String get eventType => data["eventType"];
   int get eventIntent => data["eventIntent"];
   Map<String, dynamic>? get eventData => data["eventData"];
@@ -11,5 +11,5 @@ class EventOpCode extends OpCode {
   @override
   WebSocketOpCode get code => WebSocketOpCode.event;
 
-  EventOpCode(super.data);
+  EventOp(super.data);
 }

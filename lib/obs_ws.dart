@@ -8,11 +8,12 @@ import 'package:obs_ws/classes/event.dart';
 import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import 'classes/request_response.dart';
-import 'opcodes/opcodes.dart';
+import 'classes/request.dart';
+import 'classes/response.dart';
+import 'ops/ops.dart';
 import 'protocol/protocol.dart';
 
-export 'opcodes/opcodes.dart';
+export 'ops/ops.dart';
 export 'protocol/protocol.dart';
 
 class OBSWebSocket {
@@ -45,7 +46,7 @@ class OBSWebSocket {
     Map<String, dynamic> d = json.decode(data);
     OpCode op = OpCode.OpCodeMap[WebSocketOpCode.fromInt(d["op"])]!(d["d"]);
     _opStreamController.add(op);
-    if (op is EventOpCode) {
+    if (op is EventOp) {
       Event event = EventMap[op.eventType]!(op.eventData ?? {});
       _eventStreamController.add(event);
     }
@@ -79,20 +80,23 @@ class OBSWebSocket {
     ws.sink.add(jsonEncode({"op": op.code.value, "d": op.data}));
   }
 
-  Future<GenericResponse> call(String requestType,
+  Future<OBSWebSocketResponse> call(String requestType,
       [Map<String, dynamic>? requestData]) async {
     // Prepare request
     String requestId = _uuid.v4(); // Generate ID for request
-    RequestOpCode request = RequestOpCode.create(
-        requestType, requestId, requestData); // Create request op
-    sendOpCode(request); // Send the request op
+    RequestOp request = RequestOp.create(
+      requestType: requestType,
+      requestId: requestId,
+      requestData: requestData,
+    ); // Create request op
+    sendOpCode(request); // Send request op
 
     // Wait for response with matching ID
-    RequestResponseOpCode responseOp = await opStream
+    RequestResponseOp responseOp = await opStream
         .firstWhere((op) =>
             op.code == WebSocketOpCode.requestResponse &&
-            (op as RequestResponseOpCode).requestId == requestId)
-        .timeout(Duration(seconds: requestTimeout)) as RequestResponseOpCode;
+            (op as RequestResponseOp).requestId == requestId)
+        .timeout(Duration(seconds: requestTimeout)) as RequestResponseOp;
 
     // Throw exception if result is false
     if (throwOnRequestError && !responseOp.requestStatus.result) {
@@ -100,7 +104,7 @@ class OBSWebSocket {
     }
 
     // Return as generic response
-    return GenericResponse(
+    return OBSWebSocketResponse(
         responseOp.responseData ?? {}, responseOp.requestStatus);
   }
 

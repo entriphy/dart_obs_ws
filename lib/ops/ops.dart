@@ -19,13 +19,14 @@ abstract class OpCode extends Serializable {
   static const Map<WebSocketOpCode, OpCode Function(Map<String, dynamic> data)>
       // ignore: constant_identifier_names
       OpCodeMap = {
-    WebSocketOpCode.hello: HelloOpCode.new,
-    WebSocketOpCode.identify: IdentifyOpCode.new,
-    WebSocketOpCode.identified: IdentifiedOpCode.new,
-    WebSocketOpCode.reidentify: ReidentifyOpCode.new,
-    WebSocketOpCode.event: EventOpCode.new,
-    WebSocketOpCode.request: RequestOpCode.new,
-    WebSocketOpCode.requestResponse: RequestResponseOpCode.new,
-    WebSocketOpCode.requestBatchResponse: RequestBatchResponseOpCode.new
+    WebSocketOpCode.hello: HelloOp.new,
+    WebSocketOpCode.identify: IdentifyOp.new,
+    WebSocketOpCode.identified: IdentifiedOp.new,
+    WebSocketOpCode.reidentify: ReidentifyOp.new,
+    WebSocketOpCode.event: EventOp.new,
+    WebSocketOpCode.request: RequestOp.new,
+    WebSocketOpCode.requestResponse: RequestResponseOp.new,
+    WebSocketOpCode.requestBatch: RequestBatchOp.new,
+    WebSocketOpCode.requestBatchResponse: RequestBatchResponseOp.new
   };
 }
