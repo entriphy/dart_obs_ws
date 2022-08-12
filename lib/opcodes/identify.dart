@@ -1,7 +1,9 @@
 import '../protocol/enums.dart';
 import 'opcodes.dart';
 
-/// Response to `Hello` message, should contain authentication string if authentication is required, along with PubSub subscriptions and other session parameters.
+/// Response to `Hello` message, should contain authentication string if
+/// authentication is required, along with PubSub subscriptions and other
+/// session parameters.
 class IdentifyOpCode extends OpCode {
   int get rpcVersion => data["rpcVersion"];
   String? get authentication => data["authentication"];

@@ -1,7 +1,8 @@
 import '../protocol/enums.dart';
 import 'opcodes.dart';
 
-/// Client is making a batch of requests for obs-websocket. Requests are processed serially (in order) by the server.
+/// Client is making a batch of requests for obs-websocket.
+/// Requests are processed serially (in order) by the server.
 class RequestBatchOpCode extends OpCode {
   String get requestId => data["requestId"];
   List<RequestOpCode> get requests =>

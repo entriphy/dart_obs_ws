@@ -1,7 +1,8 @@
 import '../protocol/enums.dart';
 import 'opcodes.dart';
 
-/// Client is making a request to obs-websocket. Eg get current scene, create source.
+/// Client is making a request to obs-websocket. Eg get current scene, create
+/// source.
 class RequestOpCode extends OpCode {
   String get requestType => data["requestType"];
   String get requestId => data["requestId"];

@@ -1,7 +1,8 @@
 import '../protocol/enums.dart';
 import 'opcodes.dart';
 
-/// Sent at any time after initial identification to update the provided session parameters.
+/// Sent at any time after initial identification to update the provided session
+/// parameters.
 class ReidentifyOpCode extends OpCode {
   int get eventSubscriptions => data["eventSubscriptions"];
 

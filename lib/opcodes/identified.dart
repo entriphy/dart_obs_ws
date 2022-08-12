@@ -1,7 +1,8 @@
 import '../protocol/enums.dart';
 import 'opcodes.dart';
 
-/// The identify request was received and validated, and the connection is now ready for normal operation.
+/// The identify request was received and validated, and the connection is now
+/// ready for normal operation.
 class IdentifiedOpCode extends OpCode {
   int get negotiatedRpcVersion => data["negotiatedRpcVersion"];
 
