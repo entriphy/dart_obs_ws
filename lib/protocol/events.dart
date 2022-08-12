@@ -10,10 +10,10 @@ import '../classes/event.dart';
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentSceneCollectionChanging extends Event {
-	/// Name of the current scene collection
-	String get sceneCollectionName => data["sceneCollectionName"];
+  /// Name of the current scene collection
+  String get sceneCollectionName => data["sceneCollectionName"];
 
-	CurrentSceneCollectionChanging(super.data);
+  CurrentSceneCollectionChanging(super.data);
 }
 
 /// The current scene collection has changed.
@@ -25,10 +25,10 @@ class CurrentSceneCollectionChanging extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentSceneCollectionChanged extends Event {
-	/// Name of the new scene collection
-	String get sceneCollectionName => data["sceneCollectionName"];
+  /// Name of the new scene collection
+  String get sceneCollectionName => data["sceneCollectionName"];
 
-	CurrentSceneCollectionChanged(super.data);
+  CurrentSceneCollectionChanged(super.data);
 }
 
 /// The scene collection list has changed.
@@ -38,10 +38,10 @@ class CurrentSceneCollectionChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneCollectionListChanged extends Event {
-	/// Updated list of scene collections
-	List<String> get sceneCollections => data["sceneCollections"].cast<String>();
+  /// Updated list of scene collections
+  List<String> get sceneCollections => data["sceneCollections"].cast<String>();
 
-	SceneCollectionListChanged(super.data);
+  SceneCollectionListChanged(super.data);
 }
 
 /// The current profile has begun changing.
@@ -51,10 +51,10 @@ class SceneCollectionListChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentProfileChanging extends Event {
-	/// Name of the current profile
-	String get profileName => data["profileName"];
+  /// Name of the current profile
+  String get profileName => data["profileName"];
 
-	CurrentProfileChanging(super.data);
+  CurrentProfileChanging(super.data);
 }
 
 /// The current profile has changed.
@@ -64,10 +64,10 @@ class CurrentProfileChanging extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentProfileChanged extends Event {
-	/// Name of the new profile
-	String get profileName => data["profileName"];
+  /// Name of the new profile
+  String get profileName => data["profileName"];
 
-	CurrentProfileChanged(super.data);
+  CurrentProfileChanged(super.data);
 }
 
 /// The profile list has changed.
@@ -77,10 +77,10 @@ class CurrentProfileChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class ProfileListChanged extends Event {
-	/// Updated list of profiles
-	List<String> get profiles => data["profiles"].cast<String>();
+  /// Updated list of profiles
+  List<String> get profiles => data["profiles"].cast<String>();
 
-	ProfileListChanged(super.data);
+  ProfileListChanged(super.data);
 }
 
 /// A source's filter list has been reindexed.
@@ -90,13 +90,13 @@ class ProfileListChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SourceFilterListReindexed extends Event {
-	/// Name of the source
-	String get sourceName => data["sourceName"];
+  /// Name of the source
+  String get sourceName => data["sourceName"];
 
-	/// Array of filter objects
-	List<Map<String, dynamic>> get filters => data["filters"].cast<Map<String, dynamic>>();
+  /// Array of filter objects
+  List<Map<String, dynamic>> get filters => data["filters"].cast<Map<String, dynamic>>();
 
-	SourceFilterListReindexed(super.data);
+  SourceFilterListReindexed(super.data);
 }
 
 /// A filter has been added to a source.
@@ -106,25 +106,25 @@ class SourceFilterListReindexed extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SourceFilterCreated extends Event {
-	/// Name of the source the filter was added to
-	String get sourceName => data["sourceName"];
+  /// Name of the source the filter was added to
+  String get sourceName => data["sourceName"];
 
-	/// Name of the filter
-	String get filterName => data["filterName"];
+  /// Name of the filter
+  String get filterName => data["filterName"];
 
-	/// The kind of the filter
-	String get filterKind => data["filterKind"];
+  /// The kind of the filter
+  String get filterKind => data["filterKind"];
 
-	/// Index position of the filter
-	num get filterIndex => data["filterIndex"];
+  /// Index position of the filter
+  num get filterIndex => data["filterIndex"];
 
-	/// The settings configured to the filter when it was created
-	Map<String, dynamic> get filterSettings => data["filterSettings"];
+  /// The settings configured to the filter when it was created
+  Map<String, dynamic> get filterSettings => data["filterSettings"];
 
-	/// The default settings for the filter
-	Map<String, dynamic> get defaultFilterSettings => data["defaultFilterSettings"];
+  /// The default settings for the filter
+  Map<String, dynamic> get defaultFilterSettings => data["defaultFilterSettings"];
 
-	SourceFilterCreated(super.data);
+  SourceFilterCreated(super.data);
 }
 
 /// A filter has been removed from a source.
@@ -134,13 +134,13 @@ class SourceFilterCreated extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SourceFilterRemoved extends Event {
-	/// Name of the source the filter was on
-	String get sourceName => data["sourceName"];
+  /// Name of the source the filter was on
+  String get sourceName => data["sourceName"];
 
-	/// Name of the filter
-	String get filterName => data["filterName"];
+  /// Name of the filter
+  String get filterName => data["filterName"];
 
-	SourceFilterRemoved(super.data);
+  SourceFilterRemoved(super.data);
 }
 
 /// The name of a source filter has changed.
@@ -150,16 +150,16 @@ class SourceFilterRemoved extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SourceFilterNameChanged extends Event {
-	/// The source the filter is on
-	String get sourceName => data["sourceName"];
+  /// The source the filter is on
+  String get sourceName => data["sourceName"];
 
-	/// Old name of the filter
-	String get oldFilterName => data["oldFilterName"];
+  /// Old name of the filter
+  String get oldFilterName => data["oldFilterName"];
 
-	/// New name of the filter
-	String get filterName => data["filterName"];
+  /// New name of the filter
+  String get filterName => data["filterName"];
 
-	SourceFilterNameChanged(super.data);
+  SourceFilterNameChanged(super.data);
 }
 
 /// A source filter's enable state has changed.
@@ -169,16 +169,16 @@ class SourceFilterNameChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SourceFilterEnableStateChanged extends Event {
-	/// Name of the source the filter is on
-	String get sourceName => data["sourceName"];
+  /// Name of the source the filter is on
+  String get sourceName => data["sourceName"];
 
-	/// Name of the filter
-	String get filterName => data["filterName"];
+  /// Name of the filter
+  String get filterName => data["filterName"];
 
-	/// Whether the filter is enabled
-	bool get filterEnabled => data["filterEnabled"];
+  /// Whether the filter is enabled
+  bool get filterEnabled => data["filterEnabled"];
 
-	SourceFilterEnableStateChanged(super.data);
+  SourceFilterEnableStateChanged(super.data);
 }
 
 /// OBS has begun the shutdown process.
@@ -188,7 +188,7 @@ class SourceFilterEnableStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class ExitStarted extends Event {
-	ExitStarted(super.data);
+  ExitStarted(super.data);
 }
 
 /// An input has been created.
@@ -198,22 +198,22 @@ class ExitStarted extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputCreated extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// The kind of the input
-	String get inputKind => data["inputKind"];
+  /// The kind of the input
+  String get inputKind => data["inputKind"];
 
-	/// The unversioned kind of input (aka no `_v2` stuff)
-	String get unversionedInputKind => data["unversionedInputKind"];
+  /// The unversioned kind of input (aka no `_v2` stuff)
+  String get unversionedInputKind => data["unversionedInputKind"];
 
-	/// The settings configured to the input when it was created
-	Map<String, dynamic> get inputSettings => data["inputSettings"];
+  /// The settings configured to the input when it was created
+  Map<String, dynamic> get inputSettings => data["inputSettings"];
 
-	/// The default settings for the input
-	Map<String, dynamic> get defaultInputSettings => data["defaultInputSettings"];
+  /// The default settings for the input
+  Map<String, dynamic> get defaultInputSettings => data["defaultInputSettings"];
 
-	InputCreated(super.data);
+  InputCreated(super.data);
 }
 
 /// An input has been removed.
@@ -223,10 +223,10 @@ class InputCreated extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputRemoved extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	InputRemoved(super.data);
+  InputRemoved(super.data);
 }
 
 /// The name of an input has changed.
@@ -236,13 +236,13 @@ class InputRemoved extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputNameChanged extends Event {
-	/// Old name of the input
-	String get oldInputName => data["oldInputName"];
+  /// Old name of the input
+  String get oldInputName => data["oldInputName"];
 
-	/// New name of the input
-	String get inputName => data["inputName"];
+  /// New name of the input
+  String get inputName => data["inputName"];
 
-	InputNameChanged(super.data);
+  InputNameChanged(super.data);
 }
 
 /// An input's active state has changed.
@@ -254,13 +254,13 @@ class InputNameChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputActiveStateChanged extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// Whether the input is active
-	bool get videoActive => data["videoActive"];
+  /// Whether the input is active
+  bool get videoActive => data["videoActive"];
 
-	InputActiveStateChanged(super.data);
+  InputActiveStateChanged(super.data);
 }
 
 /// An input's show state has changed.
@@ -272,13 +272,13 @@ class InputActiveStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputShowStateChanged extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// Whether the input is showing
-	bool get videoShowing => data["videoShowing"];
+  /// Whether the input is showing
+  bool get videoShowing => data["videoShowing"];
 
-	InputShowStateChanged(super.data);
+  InputShowStateChanged(super.data);
 }
 
 /// An input's mute state has changed.
@@ -288,13 +288,13 @@ class InputShowStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputMuteStateChanged extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// Whether the input is muted
-	bool get inputMuted => data["inputMuted"];
+  /// Whether the input is muted
+  bool get inputMuted => data["inputMuted"];
 
-	InputMuteStateChanged(super.data);
+  InputMuteStateChanged(super.data);
 }
 
 /// An input's volume level has changed.
@@ -304,16 +304,16 @@ class InputMuteStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputVolumeChanged extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// New volume level in multimap
-	num get inputVolumeMul => data["inputVolumeMul"];
+  /// New volume level in multimap
+  num get inputVolumeMul => data["inputVolumeMul"];
 
-	/// New volume level in dB
-	num get inputVolumeDb => data["inputVolumeDb"];
+  /// New volume level in dB
+  num get inputVolumeDb => data["inputVolumeDb"];
 
-	InputVolumeChanged(super.data);
+  InputVolumeChanged(super.data);
 }
 
 /// The audio balance value of an input has changed.
@@ -323,13 +323,13 @@ class InputVolumeChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputAudioBalanceChanged extends Event {
-	/// Name of the affected input
-	String get inputName => data["inputName"];
+  /// Name of the affected input
+  String get inputName => data["inputName"];
 
-	/// New audio balance value of the input
-	num get inputAudioBalance => data["inputAudioBalance"];
+  /// New audio balance value of the input
+  num get inputAudioBalance => data["inputAudioBalance"];
 
-	InputAudioBalanceChanged(super.data);
+  InputAudioBalanceChanged(super.data);
 }
 
 /// The sync offset of an input has changed.
@@ -339,13 +339,13 @@ class InputAudioBalanceChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputAudioSyncOffsetChanged extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// New sync offset in milliseconds
-	num get inputAudioSyncOffset => data["inputAudioSyncOffset"];
+  /// New sync offset in milliseconds
+  num get inputAudioSyncOffset => data["inputAudioSyncOffset"];
 
-	InputAudioSyncOffsetChanged(super.data);
+  InputAudioSyncOffsetChanged(super.data);
 }
 
 /// The audio tracks of an input have changed.
@@ -355,13 +355,13 @@ class InputAudioSyncOffsetChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputAudioTracksChanged extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// Object of audio tracks along with their associated enable states
-	Map<String, dynamic> get inputAudioTracks => data["inputAudioTracks"];
+  /// Object of audio tracks along with their associated enable states
+  Map<String, dynamic> get inputAudioTracks => data["inputAudioTracks"];
 
-	InputAudioTracksChanged(super.data);
+  InputAudioTracksChanged(super.data);
 }
 
 /// The monitor type of an input has changed.
@@ -377,13 +377,13 @@ class InputAudioTracksChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputAudioMonitorTypeChanged extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// New monitor type of the input
-	String get monitorType => data["monitorType"];
+  /// New monitor type of the input
+  String get monitorType => data["monitorType"];
 
-	InputAudioMonitorTypeChanged(super.data);
+  InputAudioMonitorTypeChanged(super.data);
 }
 
 /// A high-volume event providing volume levels of all active inputs every 50 milliseconds.
@@ -393,10 +393,10 @@ class InputAudioMonitorTypeChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class InputVolumeMeters extends Event {
-	/// Array of active inputs with their associated volume levels
-	List<Map<String, dynamic>> get inputs => data["inputs"].cast<Map<String, dynamic>>();
+  /// Array of active inputs with their associated volume levels
+  List<Map<String, dynamic>> get inputs => data["inputs"].cast<Map<String, dynamic>>();
 
-	InputVolumeMeters(super.data);
+  InputVolumeMeters(super.data);
 }
 
 /// A media input has started playing.
@@ -406,10 +406,10 @@ class InputVolumeMeters extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class MediaInputPlaybackStarted extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	MediaInputPlaybackStarted(super.data);
+  MediaInputPlaybackStarted(super.data);
 }
 
 /// A media input has finished playing.
@@ -419,10 +419,10 @@ class MediaInputPlaybackStarted extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class MediaInputPlaybackEnded extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	MediaInputPlaybackEnded(super.data);
+  MediaInputPlaybackEnded(super.data);
 }
 
 /// An action has been performed on an input.
@@ -432,13 +432,13 @@ class MediaInputPlaybackEnded extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class MediaInputActionTriggered extends Event {
-	/// Name of the input
-	String get inputName => data["inputName"];
+  /// Name of the input
+  String get inputName => data["inputName"];
 
-	/// Action performed on the input. See `ObsMediaInputAction` enum
-	String get mediaAction => data["mediaAction"];
+  /// Action performed on the input. See `ObsMediaInputAction` enum
+  String get mediaAction => data["mediaAction"];
 
-	MediaInputActionTriggered(super.data);
+  MediaInputActionTriggered(super.data);
 }
 
 /// The state of the stream output has changed.
@@ -448,13 +448,13 @@ class MediaInputActionTriggered extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class StreamStateChanged extends Event {
-	/// Whether the output is active
-	bool get outputActive => data["outputActive"];
+  /// Whether the output is active
+  bool get outputActive => data["outputActive"];
 
-	/// The specific state of the output
-	String get outputState => data["outputState"];
+  /// The specific state of the output
+  String get outputState => data["outputState"];
 
-	StreamStateChanged(super.data);
+  StreamStateChanged(super.data);
 }
 
 /// The state of the record output has changed.
@@ -464,16 +464,16 @@ class StreamStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class RecordStateChanged extends Event {
-	/// Whether the output is active
-	bool get outputActive => data["outputActive"];
+  /// Whether the output is active
+  bool get outputActive => data["outputActive"];
 
-	/// The specific state of the output
-	String get outputState => data["outputState"];
+  /// The specific state of the output
+  String get outputState => data["outputState"];
 
-	/// File name for the saved recording, if record stopped. `null` otherwise
-	String get outputPath => data["outputPath"];
+  /// File name for the saved recording, if record stopped. `null` otherwise
+  String get outputPath => data["outputPath"];
 
-	RecordStateChanged(super.data);
+  RecordStateChanged(super.data);
 }
 
 /// The state of the replay buffer output has changed.
@@ -483,13 +483,13 @@ class RecordStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class ReplayBufferStateChanged extends Event {
-	/// Whether the output is active
-	bool get outputActive => data["outputActive"];
+  /// Whether the output is active
+  bool get outputActive => data["outputActive"];
 
-	/// The specific state of the output
-	String get outputState => data["outputState"];
+  /// The specific state of the output
+  String get outputState => data["outputState"];
 
-	ReplayBufferStateChanged(super.data);
+  ReplayBufferStateChanged(super.data);
 }
 
 /// The state of the virtualcam output has changed.
@@ -499,13 +499,13 @@ class ReplayBufferStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class VirtualcamStateChanged extends Event {
-	/// Whether the output is active
-	bool get outputActive => data["outputActive"];
+  /// Whether the output is active
+  bool get outputActive => data["outputActive"];
 
-	/// The specific state of the output
-	String get outputState => data["outputState"];
+  /// The specific state of the output
+  String get outputState => data["outputState"];
 
-	VirtualcamStateChanged(super.data);
+  VirtualcamStateChanged(super.data);
 }
 
 /// The replay buffer has been saved.
@@ -515,10 +515,10 @@ class VirtualcamStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class ReplayBufferSaved extends Event {
-	/// Path of the saved replay file
-	String get savedReplayPath => data["savedReplayPath"];
+  /// Path of the saved replay file
+  String get savedReplayPath => data["savedReplayPath"];
 
-	ReplayBufferSaved(super.data);
+  ReplayBufferSaved(super.data);
 }
 
 /// A scene item has been created.
@@ -528,19 +528,19 @@ class ReplayBufferSaved extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneItemCreated extends Event {
-	/// Name of the scene the item was added to
-	String get sceneName => data["sceneName"];
+  /// Name of the scene the item was added to
+  String get sceneName => data["sceneName"];
 
-	/// Name of the underlying source (input/scene)
-	String get sourceName => data["sourceName"];
+  /// Name of the underlying source (input/scene)
+  String get sourceName => data["sourceName"];
 
-	/// Numeric ID of the scene item
-	num get sceneItemId => data["sceneItemId"];
+  /// Numeric ID of the scene item
+  num get sceneItemId => data["sceneItemId"];
 
-	/// Index position of the item
-	num get sceneItemIndex => data["sceneItemIndex"];
+  /// Index position of the item
+  num get sceneItemIndex => data["sceneItemIndex"];
 
-	SceneItemCreated(super.data);
+  SceneItemCreated(super.data);
 }
 
 /// A scene item has been removed.
@@ -552,16 +552,16 @@ class SceneItemCreated extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneItemRemoved extends Event {
-	/// Name of the scene the item was removed from
-	String get sceneName => data["sceneName"];
+  /// Name of the scene the item was removed from
+  String get sceneName => data["sceneName"];
 
-	/// Name of the underlying source (input/scene)
-	String get sourceName => data["sourceName"];
+  /// Name of the underlying source (input/scene)
+  String get sourceName => data["sourceName"];
 
-	/// Numeric ID of the scene item
-	num get sceneItemId => data["sceneItemId"];
+  /// Numeric ID of the scene item
+  num get sceneItemId => data["sceneItemId"];
 
-	SceneItemRemoved(super.data);
+  SceneItemRemoved(super.data);
 }
 
 /// A scene's item list has been reindexed.
@@ -571,13 +571,13 @@ class SceneItemRemoved extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneItemListReindexed extends Event {
-	/// Name of the scene
-	String get sceneName => data["sceneName"];
+  /// Name of the scene
+  String get sceneName => data["sceneName"];
 
-	/// Array of scene item objects
-	List<Map<String, dynamic>> get sceneItems => data["sceneItems"].cast<Map<String, dynamic>>();
+  /// Array of scene item objects
+  List<Map<String, dynamic>> get sceneItems => data["sceneItems"].cast<Map<String, dynamic>>();
 
-	SceneItemListReindexed(super.data);
+  SceneItemListReindexed(super.data);
 }
 
 /// A scene item's enable state has changed.
@@ -587,16 +587,16 @@ class SceneItemListReindexed extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneItemEnableStateChanged extends Event {
-	/// Name of the scene the item is in
-	String get sceneName => data["sceneName"];
+  /// Name of the scene the item is in
+  String get sceneName => data["sceneName"];
 
-	/// Numeric ID of the scene item
-	num get sceneItemId => data["sceneItemId"];
+  /// Numeric ID of the scene item
+  num get sceneItemId => data["sceneItemId"];
 
-	/// Whether the scene item is enabled (visible)
-	bool get sceneItemEnabled => data["sceneItemEnabled"];
+  /// Whether the scene item is enabled (visible)
+  bool get sceneItemEnabled => data["sceneItemEnabled"];
 
-	SceneItemEnableStateChanged(super.data);
+  SceneItemEnableStateChanged(super.data);
 }
 
 /// A scene item's lock state has changed.
@@ -606,16 +606,16 @@ class SceneItemEnableStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneItemLockStateChanged extends Event {
-	/// Name of the scene the item is in
-	String get sceneName => data["sceneName"];
+  /// Name of the scene the item is in
+  String get sceneName => data["sceneName"];
 
-	/// Numeric ID of the scene item
-	num get sceneItemId => data["sceneItemId"];
+  /// Numeric ID of the scene item
+  num get sceneItemId => data["sceneItemId"];
 
-	/// Whether the scene item is locked
-	bool get sceneItemLocked => data["sceneItemLocked"];
+  /// Whether the scene item is locked
+  bool get sceneItemLocked => data["sceneItemLocked"];
 
-	SceneItemLockStateChanged(super.data);
+  SceneItemLockStateChanged(super.data);
 }
 
 /// A scene item has been selected in the Ui.
@@ -625,13 +625,13 @@ class SceneItemLockStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneItemSelected extends Event {
-	/// Name of the scene the item is in
-	String get sceneName => data["sceneName"];
+  /// Name of the scene the item is in
+  String get sceneName => data["sceneName"];
 
-	/// Numeric ID of the scene item
-	num get sceneItemId => data["sceneItemId"];
+  /// Numeric ID of the scene item
+  num get sceneItemId => data["sceneItemId"];
 
-	SceneItemSelected(super.data);
+  SceneItemSelected(super.data);
 }
 
 /// The transform/crop of a scene item has changed.
@@ -641,16 +641,16 @@ class SceneItemSelected extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneItemTransformChanged extends Event {
-	/// The name of the scene the item is in
-	String get sceneName => data["sceneName"];
+  /// The name of the scene the item is in
+  String get sceneName => data["sceneName"];
 
-	/// Numeric ID of the scene item
-	num get sceneItemId => data["sceneItemId"];
+  /// Numeric ID of the scene item
+  num get sceneItemId => data["sceneItemId"];
 
-	/// New transform/crop info of the scene item
-	Map<String, dynamic> get sceneItemTransform => data["sceneItemTransform"];
+  /// New transform/crop info of the scene item
+  Map<String, dynamic> get sceneItemTransform => data["sceneItemTransform"];
 
-	SceneItemTransformChanged(super.data);
+  SceneItemTransformChanged(super.data);
 }
 
 /// A new scene has been created.
@@ -660,13 +660,13 @@ class SceneItemTransformChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneCreated extends Event {
-	/// Name of the new scene
-	String get sceneName => data["sceneName"];
+  /// Name of the new scene
+  String get sceneName => data["sceneName"];
 
-	/// Whether the new scene is a group
-	bool get isGroup => data["isGroup"];
+  /// Whether the new scene is a group
+  bool get isGroup => data["isGroup"];
 
-	SceneCreated(super.data);
+  SceneCreated(super.data);
 }
 
 /// A scene has been removed.
@@ -676,13 +676,13 @@ class SceneCreated extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneRemoved extends Event {
-	/// Name of the removed scene
-	String get sceneName => data["sceneName"];
+  /// Name of the removed scene
+  String get sceneName => data["sceneName"];
 
-	/// Whether the scene was a group
-	bool get isGroup => data["isGroup"];
+  /// Whether the scene was a group
+  bool get isGroup => data["isGroup"];
 
-	SceneRemoved(super.data);
+  SceneRemoved(super.data);
 }
 
 /// The name of a scene has changed.
@@ -692,13 +692,13 @@ class SceneRemoved extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneNameChanged extends Event {
-	/// Old name of the scene
-	String get oldSceneName => data["oldSceneName"];
+  /// Old name of the scene
+  String get oldSceneName => data["oldSceneName"];
 
-	/// New name of the scene
-	String get sceneName => data["sceneName"];
+  /// New name of the scene
+  String get sceneName => data["sceneName"];
 
-	SceneNameChanged(super.data);
+  SceneNameChanged(super.data);
 }
 
 /// The current program scene has changed.
@@ -708,10 +708,10 @@ class SceneNameChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentProgramSceneChanged extends Event {
-	/// Name of the scene that was switched to
-	String get sceneName => data["sceneName"];
+  /// Name of the scene that was switched to
+  String get sceneName => data["sceneName"];
 
-	CurrentProgramSceneChanged(super.data);
+  CurrentProgramSceneChanged(super.data);
 }
 
 /// The current preview scene has changed.
@@ -721,10 +721,10 @@ class CurrentProgramSceneChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentPreviewSceneChanged extends Event {
-	/// Name of the scene that was switched to
-	String get sceneName => data["sceneName"];
+  /// Name of the scene that was switched to
+  String get sceneName => data["sceneName"];
 
-	CurrentPreviewSceneChanged(super.data);
+  CurrentPreviewSceneChanged(super.data);
 }
 
 /// The list of scenes has changed.
@@ -736,10 +736,10 @@ class CurrentPreviewSceneChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneListChanged extends Event {
-	/// Updated array of scenes
-	List<Map<String, dynamic>> get scenes => data["scenes"].cast<Map<String, dynamic>>();
+  /// Updated array of scenes
+  List<Map<String, dynamic>> get scenes => data["scenes"].cast<Map<String, dynamic>>();
 
-	SceneListChanged(super.data);
+  SceneListChanged(super.data);
 }
 
 /// The current scene transition has changed.
@@ -749,10 +749,10 @@ class SceneListChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentSceneTransitionChanged extends Event {
-	/// Name of the new transition
-	String get transitionName => data["transitionName"];
+  /// Name of the new transition
+  String get transitionName => data["transitionName"];
 
-	CurrentSceneTransitionChanged(super.data);
+  CurrentSceneTransitionChanged(super.data);
 }
 
 /// The current scene transition duration has changed.
@@ -762,10 +762,10 @@ class CurrentSceneTransitionChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class CurrentSceneTransitionDurationChanged extends Event {
-	/// Transition duration in milliseconds
-	num get transitionDuration => data["transitionDuration"];
+  /// Transition duration in milliseconds
+  num get transitionDuration => data["transitionDuration"];
 
-	CurrentSceneTransitionDurationChanged(super.data);
+  CurrentSceneTransitionDurationChanged(super.data);
 }
 
 /// A scene transition has started.
@@ -775,10 +775,10 @@ class CurrentSceneTransitionDurationChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneTransitionStarted extends Event {
-	/// Scene transition name
-	String get transitionName => data["transitionName"];
+  /// Scene transition name
+  String get transitionName => data["transitionName"];
 
-	SceneTransitionStarted(super.data);
+  SceneTransitionStarted(super.data);
 }
 
 /// A scene transition has completed fully.
@@ -790,10 +790,10 @@ class SceneTransitionStarted extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneTransitionEnded extends Event {
-	/// Scene transition name
-	String get transitionName => data["transitionName"];
+  /// Scene transition name
+  String get transitionName => data["transitionName"];
 
-	SceneTransitionEnded(super.data);
+  SceneTransitionEnded(super.data);
 }
 
 /// A scene transition's video has completed fully.
@@ -808,10 +808,10 @@ class SceneTransitionEnded extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class SceneTransitionVideoEnded extends Event {
-	/// Scene transition name
-	String get transitionName => data["transitionName"];
+  /// Scene transition name
+  String get transitionName => data["transitionName"];
 
-	SceneTransitionVideoEnded(super.data);
+  SceneTransitionVideoEnded(super.data);
 }
 
 /// Studio mode has been enabled or disabled.
@@ -821,10 +821,10 @@ class SceneTransitionVideoEnded extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class StudioModeStateChanged extends Event {
-	/// True == Enabled, False == Disabled
-	bool get studioModeEnabled => data["studioModeEnabled"];
+  /// True == Enabled, False == Disabled
+  bool get studioModeEnabled => data["studioModeEnabled"];
 
-	StudioModeStateChanged(super.data);
+  StudioModeStateChanged(super.data);
 }
 
 /// An event has been emitted from a vendor.
@@ -837,70 +837,70 @@ class StudioModeStateChanged extends Event {
 /// * RPC Version: 1
 /// * Initial Version: 5.0.0
 class VendorEvent extends Event {
-	/// Name of the vendor emitting the event
-	String get vendorName => data["vendorName"];
+  /// Name of the vendor emitting the event
+  String get vendorName => data["vendorName"];
 
-	/// Vendor-provided event typedef
-	String get eventType => data["eventType"];
+  /// Vendor-provided event typedef
+  String get eventType => data["eventType"];
 
-	/// Vendor-provided event data. {} if event does not provide any data
-	Map<String, dynamic> get eventData => data["eventData"];
+  /// Vendor-provided event data. {} if event does not provide any data
+  Map<String, dynamic> get eventData => data["eventData"];
 
-	VendorEvent(super.data);
+  VendorEvent(super.data);
 }
 
 const Map<String, Event Function(Map<String, dynamic> data)> EventMap = {
-	"CurrentSceneCollectionChanging": CurrentSceneCollectionChanging.new,
-	"CurrentSceneCollectionChanged": CurrentSceneCollectionChanged.new,
-	"SceneCollectionListChanged": SceneCollectionListChanged.new,
-	"CurrentProfileChanging": CurrentProfileChanging.new,
-	"CurrentProfileChanged": CurrentProfileChanged.new,
-	"ProfileListChanged": ProfileListChanged.new,
-	"SourceFilterListReindexed": SourceFilterListReindexed.new,
-	"SourceFilterCreated": SourceFilterCreated.new,
-	"SourceFilterRemoved": SourceFilterRemoved.new,
-	"SourceFilterNameChanged": SourceFilterNameChanged.new,
-	"SourceFilterEnableStateChanged": SourceFilterEnableStateChanged.new,
-	"ExitStarted": ExitStarted.new,
-	"InputCreated": InputCreated.new,
-	"InputRemoved": InputRemoved.new,
-	"InputNameChanged": InputNameChanged.new,
-	"InputActiveStateChanged": InputActiveStateChanged.new,
-	"InputShowStateChanged": InputShowStateChanged.new,
-	"InputMuteStateChanged": InputMuteStateChanged.new,
-	"InputVolumeChanged": InputVolumeChanged.new,
-	"InputAudioBalanceChanged": InputAudioBalanceChanged.new,
-	"InputAudioSyncOffsetChanged": InputAudioSyncOffsetChanged.new,
-	"InputAudioTracksChanged": InputAudioTracksChanged.new,
-	"InputAudioMonitorTypeChanged": InputAudioMonitorTypeChanged.new,
-	"InputVolumeMeters": InputVolumeMeters.new,
-	"MediaInputPlaybackStarted": MediaInputPlaybackStarted.new,
-	"MediaInputPlaybackEnded": MediaInputPlaybackEnded.new,
-	"MediaInputActionTriggered": MediaInputActionTriggered.new,
-	"StreamStateChanged": StreamStateChanged.new,
-	"RecordStateChanged": RecordStateChanged.new,
-	"ReplayBufferStateChanged": ReplayBufferStateChanged.new,
-	"VirtualcamStateChanged": VirtualcamStateChanged.new,
-	"ReplayBufferSaved": ReplayBufferSaved.new,
-	"SceneItemCreated": SceneItemCreated.new,
-	"SceneItemRemoved": SceneItemRemoved.new,
-	"SceneItemListReindexed": SceneItemListReindexed.new,
-	"SceneItemEnableStateChanged": SceneItemEnableStateChanged.new,
-	"SceneItemLockStateChanged": SceneItemLockStateChanged.new,
-	"SceneItemSelected": SceneItemSelected.new,
-	"SceneItemTransformChanged": SceneItemTransformChanged.new,
-	"SceneCreated": SceneCreated.new,
-	"SceneRemoved": SceneRemoved.new,
-	"SceneNameChanged": SceneNameChanged.new,
-	"CurrentProgramSceneChanged": CurrentProgramSceneChanged.new,
-	"CurrentPreviewSceneChanged": CurrentPreviewSceneChanged.new,
-	"SceneListChanged": SceneListChanged.new,
-	"CurrentSceneTransitionChanged": CurrentSceneTransitionChanged.new,
-	"CurrentSceneTransitionDurationChanged": CurrentSceneTransitionDurationChanged.new,
-	"SceneTransitionStarted": SceneTransitionStarted.new,
-	"SceneTransitionEnded": SceneTransitionEnded.new,
-	"SceneTransitionVideoEnded": SceneTransitionVideoEnded.new,
-	"StudioModeStateChanged": StudioModeStateChanged.new,
-	"VendorEvent": VendorEvent.new,
+  "CurrentSceneCollectionChanging": CurrentSceneCollectionChanging.new,
+  "CurrentSceneCollectionChanged": CurrentSceneCollectionChanged.new,
+  "SceneCollectionListChanged": SceneCollectionListChanged.new,
+  "CurrentProfileChanging": CurrentProfileChanging.new,
+  "CurrentProfileChanged": CurrentProfileChanged.new,
+  "ProfileListChanged": ProfileListChanged.new,
+  "SourceFilterListReindexed": SourceFilterListReindexed.new,
+  "SourceFilterCreated": SourceFilterCreated.new,
+  "SourceFilterRemoved": SourceFilterRemoved.new,
+  "SourceFilterNameChanged": SourceFilterNameChanged.new,
+  "SourceFilterEnableStateChanged": SourceFilterEnableStateChanged.new,
+  "ExitStarted": ExitStarted.new,
+  "InputCreated": InputCreated.new,
+  "InputRemoved": InputRemoved.new,
+  "InputNameChanged": InputNameChanged.new,
+  "InputActiveStateChanged": InputActiveStateChanged.new,
+  "InputShowStateChanged": InputShowStateChanged.new,
+  "InputMuteStateChanged": InputMuteStateChanged.new,
+  "InputVolumeChanged": InputVolumeChanged.new,
+  "InputAudioBalanceChanged": InputAudioBalanceChanged.new,
+  "InputAudioSyncOffsetChanged": InputAudioSyncOffsetChanged.new,
+  "InputAudioTracksChanged": InputAudioTracksChanged.new,
+  "InputAudioMonitorTypeChanged": InputAudioMonitorTypeChanged.new,
+  "InputVolumeMeters": InputVolumeMeters.new,
+  "MediaInputPlaybackStarted": MediaInputPlaybackStarted.new,
+  "MediaInputPlaybackEnded": MediaInputPlaybackEnded.new,
+  "MediaInputActionTriggered": MediaInputActionTriggered.new,
+  "StreamStateChanged": StreamStateChanged.new,
+  "RecordStateChanged": RecordStateChanged.new,
+  "ReplayBufferStateChanged": ReplayBufferStateChanged.new,
+  "VirtualcamStateChanged": VirtualcamStateChanged.new,
+  "ReplayBufferSaved": ReplayBufferSaved.new,
+  "SceneItemCreated": SceneItemCreated.new,
+  "SceneItemRemoved": SceneItemRemoved.new,
+  "SceneItemListReindexed": SceneItemListReindexed.new,
+  "SceneItemEnableStateChanged": SceneItemEnableStateChanged.new,
+  "SceneItemLockStateChanged": SceneItemLockStateChanged.new,
+  "SceneItemSelected": SceneItemSelected.new,
+  "SceneItemTransformChanged": SceneItemTransformChanged.new,
+  "SceneCreated": SceneCreated.new,
+  "SceneRemoved": SceneRemoved.new,
+  "SceneNameChanged": SceneNameChanged.new,
+  "CurrentProgramSceneChanged": CurrentProgramSceneChanged.new,
+  "CurrentPreviewSceneChanged": CurrentPreviewSceneChanged.new,
+  "SceneListChanged": SceneListChanged.new,
+  "CurrentSceneTransitionChanged": CurrentSceneTransitionChanged.new,
+  "CurrentSceneTransitionDurationChanged": CurrentSceneTransitionDurationChanged.new,
+  "SceneTransitionStarted": SceneTransitionStarted.new,
+  "SceneTransitionEnded": SceneTransitionEnded.new,
+  "SceneTransitionVideoEnded": SceneTransitionVideoEnded.new,
+  "StudioModeStateChanged": StudioModeStateChanged.new,
+  "VendorEvent": VendorEvent.new,
 };
 

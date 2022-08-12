@@ -7,7 +7,7 @@ def pascal_to_camel(str) -> str:
     return str[0].lower() + str[1:]
 
 def write(f: io.FileIO, text: str = "", indent: int = 0, newlines: int = 1, comment: bool = False):
-    f.write("\t" * indent + ("/// " if comment else "") + text + "\n" * newlines)
+    f.write("  " * indent + ("/// " if comment else "") + text + "\n" * newlines)
 
 def fix_field_type(field_type: str) -> str:
     return field_type.replace("Number", "num").replace("Array", "List").replace("Any", "dynamic").replace("Object", "Map<String, dynamic>").replace("Boolean", "bool")
