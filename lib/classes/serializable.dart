@@ -1,9 +1,8 @@
 class Serializable {
-  final Map<String, dynamic> _data;
-  Map<String, dynamic> get data => _data;
+  final Map<String, dynamic> data;
 
-  Serializable(this._data);
+  Serializable(this.data);
 
   @override
-  String toString() => _data.toString();
+  String toString() => data.toString();
 }

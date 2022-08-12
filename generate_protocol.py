@@ -114,7 +114,7 @@ if __name__ == "__main__":
         write(f_events, "* Complexity: " + str(event["complexity"]) + "/5", comment=True)
         write(f_events, "* RPC Version: " + event["rpcVersion"], comment=True)
         write(f_events, "* Initial Version: " + event["initialVersion"], comment=True)
-        write(f_events, f"class {event['eventType']} extends Event {'{'}")
+        write(f_events, f"class {event['eventType']} extends OBSWebSocketEvent {'{'}")
         for field in event["dataFields"]:
             write(f_events, field["valueDescription"].replace("\n", " "), indent=1, comment=True)
             field_type = fix_field_type(field['valueType'])
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         events.append(event["eventType"])
 
     write(f_events, "// ignore: constant_identifier_names")
-    write(f_events, "const Map<String, Event Function(Map<String, dynamic> data)> EventMap = {")
+    write(f_events, "const Map<String, OBSWebSocketEvent Function(Map<String, dynamic> data)> EventMap = {")
     for event in events:
         write(f_events, f"\"{event}\": {event}.new,", indent=1)
     write(f_events, "};", newlines=2)

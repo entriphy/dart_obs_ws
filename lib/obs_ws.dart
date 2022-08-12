@@ -15,6 +15,8 @@ import 'protocol/protocol.dart';
 
 export 'ops/ops.dart';
 export 'protocol/protocol.dart';
+export 'classes/request.dart';
+export 'classes/response.dart';
 
 class OBSWebSocket {
   // WebSocket
@@ -31,9 +33,9 @@ class OBSWebSocket {
   // Streams and stuff
   late Uuid _uuid;
   late StreamController<OpCode> _opStreamController;
-  late StreamController<Event> _eventStreamController;
+  late StreamController<OBSWebSocketEvent> _eventStreamController;
   Stream<OpCode> get opStream => _opStreamController.stream;
-  Stream<Event> get eventStream => _eventStreamController.stream;
+  Stream<OBSWebSocketEvent> get eventStream => _eventStreamController.stream;
 
   OBSWebSocket._(this._ws) {
     _uuid = Uuid();
@@ -44,10 +46,11 @@ class OBSWebSocket {
 
   void _listener(dynamic data) {
     Map<String, dynamic> d = json.decode(data);
-    OpCode op = OpCode.OpCodeMap[WebSocketOpCode.fromInt(d["op"])]!(d["d"]);
+    WebSocketOpCode opCode = WebSocketOpCode.fromInt(d["op"]);
+    OpCode op = OpCode.OpCodeMap[opCode]!(d["d"]);
     _opStreamController.add(op);
     if (op is EventOp) {
-      Event event = EventMap[op.eventType]!(op.eventData ?? {});
+      OBSWebSocketEvent event = EventMap[op.eventType]!(op.eventData ?? {});
       _eventStreamController.add(event);
     }
   }
@@ -106,6 +109,43 @@ class OBSWebSocket {
     // Return as generic response
     return OBSWebSocketResponse(
         responseOp.responseData ?? {}, responseOp.requestStatus);
+  }
+
+  Future<List<OBSWebSocketResponse>> callBatch(
+      List<OBSWebSocketRequest> requests,
+      {bool haltOnFailure = false,
+      RequestBatchExecutionType executionType =
+          RequestBatchExecutionType.serialRealtime}) async {
+    // Prepare request
+    assert(requests.isNotEmpty);
+    String requestId = _uuid.v4(); // Generate ID for request
+    List<RequestOp> requestOpCodes = requests
+        .map((req) => RequestOp.create(
+              requestType: req.type,
+              requestId: requestId,
+              requestData: req.data,
+            ))
+        .toList(); // Create request ops
+    RequestBatchOp batchRequest = RequestBatchOp.create(
+      requestId: requestId,
+      haltOnFailure: haltOnFailure,
+      executionType: executionType,
+      requests: requestOpCodes,
+    ); // Create batch request op
+    sendOpCode(batchRequest); // Send the request op
+
+    // Wait for response with matching ID
+    RequestBatchResponseOp responseOp = await opStream
+        .firstWhere((op) =>
+            op.code == WebSocketOpCode.requestBatchResponse &&
+            (op as RequestBatchResponseOp).requestId == requestId)
+        .timeout(Duration(seconds: requestTimeout)) as RequestBatchResponseOp;
+
+    // Return
+    return responseOp.results
+        .map<OBSWebSocketResponse>((res) =>
+            OBSWebSocketResponse(res.responseData ?? {}, res.requestStatus))
+        .toList();
   }
 
   static String createAuthenticationString(

@@ -19,6 +19,7 @@ class RequestOp extends OpCode {
       : super({
           "requestType": requestType,
           "requestId": requestId,
-          if (requestData != null) "requestData": requestData
+          if (requestData != null && requestData.isNotEmpty)
+            "requestData": requestData
         });
 }
