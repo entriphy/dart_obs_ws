@@ -15,6 +15,7 @@ import 'classes/response.dart';
 export 'protocol/protocol.dart';
 export 'classes/request.dart';
 export 'classes/response.dart';
+export 'classes/event.dart';
 export 'ops/ops.dart';
 
 class OBSWebSocket {
