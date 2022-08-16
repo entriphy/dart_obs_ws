@@ -27,4 +27,5 @@ doc/api/
 .flutter-plugins-dependencies
 
 # Generated protocol files
-lib/protocol/*
+lib/src/protocol/*
+!lib/src/protocol/protocol.dart

@@ -6,10 +6,15 @@ import 'ops.dart';
 /// Contains authentication information if auth is required.
 /// Also contains RPC version for version negotiation.
 class HelloOp extends OpCode {
+  /// obs-websocket version of the host
   String get obsWebSocketVersion => data["obsWebSocketVersion"];
+
+  /// RPC version of the host
   int get rpcVersion => data["rpcVersion"];
-  Authentication? get authentication => data.containsKey("authentication")
-      ? Authentication(data["authentication"])
+
+  /// Authentication info (if applicable)
+  HelloAuthentication? get authentication => data.containsKey("authentication")
+      ? HelloAuthentication(data["authentication"])
       : null;
 
   @override
@@ -18,9 +23,11 @@ class HelloOp extends OpCode {
   HelloOp(super.data);
 }
 
-class Authentication extends Serializable {
+/// Authentication info sent by HelloOp required to the authenticate the client
+/// to the host
+class HelloAuthentication extends Serializable {
   String get challenge => data["challenge"];
   String get salt => data["salt"];
 
-  Authentication(super.data);
+  HelloAuthentication(super.data);
 }

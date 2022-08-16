@@ -1,5 +1,6 @@
-import '../obs_ws.dart';
+import '../obs_websocket.dart';
 import '../classes/serializable.dart';
+import 'ops.dart';
 
 export 'hello.dart';
 export 'identified.dart';

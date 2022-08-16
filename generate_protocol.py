@@ -15,12 +15,11 @@ def fix_field_type(field_type: str) -> str:
 if __name__ == "__main__":
     protocol = requests.get("https://raw.githubusercontent.com/obsproject/obs-websocket/master/docs/generated/protocol.json").json()
 
-    f_requests = open("lib/protocol/requests.dart", "w")
-    write(f_requests, "import '../obs_ws.dart';")
-    write(f_requests, "import '../classes/response.dart';", newlines=2)
-    write(f_requests, "extension Protocol on OBSWebSocket {")
+    f_requests = open("lib/src/protocol/requests.dart", "w")
+    write(f_requests, "import '../obs_websocket.dart';", newlines=2)
+    write(f_requests, "extension Requests on OBSWebSocket {")
 
-    f_classes = open("lib/protocol/responses.dart", "w")
+    f_classes = open("lib/src/protocol/responses.dart", "w")
     write(f_classes, "import '../classes/response.dart';", newlines=2)
 
     for request in protocol["requests"]:
@@ -49,7 +48,10 @@ if __name__ == "__main__":
         if len(params) > 0:
             write(f_requests, "**Request fields:**", indent=1, comment=True)
             for field in request["requestFields"]:
-                write(f_requests, f"* [{field['valueName']}]: {field['valueDescription'].replace(chr(92), ' ')}", indent=1, comment=True)
+                if "." not in field["valueName"]:
+                    write(f_requests, f"* [{field['valueName']}]: {field['valueDescription'].replace(chr(92), ' ')}", indent=1, comment=True)
+                else:
+                    write(f_requests, f"* {field['valueName']}: {field['valueDescription'].replace(chr(92), ' ')}", indent=1, comment=True)
 
         if request["deprecated"]:
             write(f_requests, "@Deprecated(\"Deprecated\")", indent=1)
@@ -60,6 +62,7 @@ if __name__ == "__main__":
             write(f_requests, f"call(\"{request['requestType']}\"{', {%s}' % ', '.join(request_params) if len(request_params) > 0 else ''});", newlines=2)
 
         if len(request["responseFields"]) > 0:
+            write(f_classes, f"/// Response for {request['requestType']}")
             write(f_classes, f"class {request['requestType']}Response extends OBSWebSocketResponse {'{'}")
             for field in request["responseFields"]:
                 field_name = field["valueName"]
@@ -74,7 +77,7 @@ if __name__ == "__main__":
     f_requests.close()
     f_classes.close()
 
-    f_enums = open("lib/protocol/enums.dart", "w")
+    f_enums = open("lib/src/protocol/enums.dart", "w")
     for enum in protocol["enums"]:
         if enum["enumType"] == "ObsMediaInputAction": # Kinda broken, but this is deprecated anyway
             continue
@@ -102,7 +105,7 @@ if __name__ == "__main__":
         write(f_enums, "}", newlines=2)
     f_enums.close()
 
-    f_events = open("lib/protocol/events.dart", "w")
+    f_events = open("lib/src/protocol/events.dart", "w")
     write(f_events, "import '../classes/event.dart';", newlines=2)
 
     events = []
@@ -114,18 +117,18 @@ if __name__ == "__main__":
         write(f_events, "* Complexity: " + str(event["complexity"]) + "/5", comment=True)
         write(f_events, "* RPC Version: " + event["rpcVersion"], comment=True)
         write(f_events, "* Initial Version: " + event["initialVersion"], comment=True)
-        write(f_events, f"class {event['eventType']} extends OBSWebSocketEvent {'{'}")
+        write(f_events, f"class {event['eventType']}Event extends OBSWebSocketEvent {'{'}")
         for field in event["dataFields"]:
             write(f_events, field["valueDescription"].replace("\n", " "), indent=1, comment=True)
             field_type = fix_field_type(field['valueType'])
             write(f_events, f"{field_type} get {field['valueName']} => data[\"{field['valueName']}\"]{'.cast<%s>()' % re.findall(r'List<(.+)>', field_type)[0] if field_type.startswith('List<') else ''};", indent=1, newlines=2)
-        write(f_events, f"{event['eventType']}(super.data);", indent=1)
+        write(f_events, f"{event['eventType']}Event(super.data);", indent=1)
         write(f_events, "}", newlines=2)
         events.append(event["eventType"])
 
     write(f_events, "// ignore: constant_identifier_names")
     write(f_events, "const Map<String, OBSWebSocketEvent Function(Map<String, dynamic> data)> EventMap = {")
     for event in events:
-        write(f_events, f"\"{event}\": {event}.new,", indent=1)
+        write(f_events, f"\"{event}\": {event}Event.new,", indent=1)
     write(f_events, "};", newlines=2)
     f_events.close()
