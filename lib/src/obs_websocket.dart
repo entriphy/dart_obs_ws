@@ -41,7 +41,7 @@ class OBSWebSocket {
     _uuid = Uuid();
     _opStreamController = StreamController.broadcast();
     _eventStreamController = StreamController.broadcast();
-    ws.stream.asBroadcastStream().listen(_listener);
+    ws.stream.asBroadcastStream().listen(_listener, onDone: disconnect);
   }
 
   Map<String, dynamic> _castMap(Map map) => Map<String, dynamic>.from(map);
@@ -73,6 +73,8 @@ class OBSWebSocket {
   }
 
   Future<void> disconnect() async {
+    await _opStreamController.close();
+    await _eventStreamController.close();
     await ws.sink.close();
   }
 
