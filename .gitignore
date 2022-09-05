@@ -29,3 +29,6 @@ doc/api/
 # Generated protocol files
 lib/src/protocol/*
 !lib/src/protocol/protocol.dart
+
+# Editors
+.vscode
