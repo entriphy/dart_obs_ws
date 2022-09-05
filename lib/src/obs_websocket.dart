@@ -51,10 +51,12 @@ class OBSWebSocket {
     d["d"] = _castMap(d["d"]);
     WebSocketOpCode opCode = WebSocketOpCode.fromInt(d["op"]);
     OpCode op = OpCode.OpCodeMap[opCode]!(d["d"]);
-    _opStreamController.add(op);
-    if (op is EventOp) {
-      OBSWebSocketEvent event = EventMap[op.eventType]!(op.eventData ?? {});
-      _eventStreamController.add(event);
+    if (!_opStreamController.isClosed) {
+      _opStreamController.add(op);
+      if (op is EventOp) {
+        OBSWebSocketEvent event = EventMap[op.eventType]!(op.eventData ?? {});
+        if (!_eventStreamController.isClosed) _eventStreamController.add(event);
+      }
     }
   }
 
