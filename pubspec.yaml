@@ -6,9 +6,9 @@ environment:
   sdk: '>=2.17.6 <3.0.0'
 
 dependencies:
-  crypto: 3.0.2 # Generating hash for password
-  uuid: 3.0.6 # Generating request IDs
-  web_socket_channel: 2.2.0 # Cross-platform WebSocket support
+  crypto: 3.0.3 # Generating hash for password
+  uuid: 3.0.7 # Generating request IDs
+  web_socket_channel: 2.4.0 # Cross-platform WebSocket support
 
 dev_dependencies:
   lints: ^2.0.0
