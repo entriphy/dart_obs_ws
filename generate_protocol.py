@@ -79,9 +79,7 @@ if __name__ == "__main__":
 
     f_enums = open("lib/src/protocol/enums.dart", "w")
     for enum in protocol["enums"]:
-        if enum["enumType"] == "ObsMediaInputAction": # Kinda broken, but this is deprecated anyway
-            continue
-
+        enum_is_string = False
         write(f_enums, f"enum {enum['enumType']} {'{'}")
         for i, identifier in enumerate(enum["enumIdentifiers"]):
             for desc in identifier["description"].split("\n"):
@@ -90,18 +88,30 @@ if __name__ == "__main__":
             write(f_enums, "* Initial Version: " + identifier["initialVersion"], indent=1, comment=True)
             if identifier["deprecated"]:
                 write(f_enums, "@Deprecated(\"Deprecated\")", indent=1)
-            enum_value = identifier['enumValue']
+            enum_value = identifier["enumValue"]
             if type(enum_value) == str:
-                if enum_value.startswith("("):
-                    enum_value = enum_value[1:-1]
-                if " | " in enum_value: # For EventSubscription
-                    identifiers = enum_value.split(" | ")
-                    values = [str(next(x for x in enum["enumIdentifiers"] if x["enumIdentifier"] == i)["enumValue"]) for i in identifiers]
-                    enum_value = " | ".join(values)
-            write(f_enums, f"{pascal_to_camel(identifier['enumIdentifier'])}({enum_value}){',' if i != len(enum['enumIdentifiers']) - 1 else ';'}", indent=1, newlines=2)
-        write(f_enums, "final int value;", indent=1)
-        write(f_enums, f"const {enum['enumType']}(this.value);", indent=1)
-        write(f_enums, f"static {enum['enumType']} fromInt(int n) => {enum['enumType']}.values.firstWhere((val) => val.value == n);", indent=1)
+                if enum_value.startswith("OBS_"):
+                    enum_is_string = True
+                    enum_value = f'"{enum_value}"'
+                else:
+                    if enum_value.startswith("("):
+                        enum_value = enum_value[1:-1]
+                    if " | " in enum_value: # For EventSubscription
+                        identifiers = enum_value.split(" | ")
+                        values = [str(next(x for x in enum["enumIdentifiers"] if x["enumIdentifier"] == i)["enumValue"]) for i in identifiers]
+                        enum_value = " | ".join(values)
+            if enum_is_string:
+                write(f_enums, f"{snake_to_camel(identifier['enumIdentifier'].lower())}({enum_value}){',' if i != len(enum['enumIdentifiers']) - 1 else ';'}", indent=1, newlines=2)
+            else:
+                write(f_enums, f"{pascal_to_camel(identifier['enumIdentifier'])}({enum_value}, \"{identifier['enumIdentifier']}\"){',' if i != len(enum['enumIdentifiers']) - 1 else ';'}", indent=1, newlines=2)
+            
+        write(f_enums, f"final {'String' if enum_is_string else 'int'} value;", indent=1)
+        if not enum_is_string:
+            write(f_enums, f"final String name;", indent=1)
+        write(f_enums, f"const {enum['enumType']}(this.value{', this.name' if not enum_is_string else ''});", indent=1)
+        write(f_enums, f"static {enum['enumType']} from{'String' if enum_is_string else 'Int'}({'String' if enum_is_string else 'int'} n) => {enum['enumType']}.values.firstWhere((val) => val.value == n);", indent=1)
+        if not enum_is_string:
+            write(f_enums, f"static {enum['enumType']} fromString(String n) => {enum['enumType']}.values.firstWhere((val) => val.name == n);", indent=1)
         write(f_enums, "}", newlines=2)
     f_enums.close()
 
