@@ -18,8 +18,7 @@ abstract class OpCode extends Serializable {
   OpCode(super.data);
 
   static const Map<WebSocketOpCode, OpCode Function(Map<String, dynamic> data)>
-      // ignore: constant_identifier_names
-      OpCodeMap = {
+      opCodeMap = {
     WebSocketOpCode.hello: HelloOp.new,
     WebSocketOpCode.identify: IdentifyOp.new,
     WebSocketOpCode.identified: IdentifiedOp.new,

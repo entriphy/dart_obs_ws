@@ -50,7 +50,7 @@ class OBSWebSocket {
     Map<String, dynamic> d = !msgpack ? json.decode(data) : json.decode(data);
     d["d"] = _castMap(d["d"]);
     WebSocketOpCode opCode = WebSocketOpCode.fromInt(d["op"]);
-    OpCode op = OpCode.OpCodeMap[opCode]!(d["d"]);
+    OpCode op = OpCode.opCodeMap[opCode]!(d["d"]);
     if (!_opStreamController.isClosed) {
       _opStreamController.add(op);
       if (op is EventOp) {
@@ -153,26 +153,37 @@ class OBSWebSocket {
 
     // Return as generic response
     T response = request.serializeResponse(
-        responseOp.responseData ?? {}, responseOp.requestStatus) as T;
+      responseOp.responseData ?? Map<String, dynamic>.from({}),
+      responseOp.requestStatus,
+    ) as T;
     request.response = response;
     return response;
   }
 
-  Future<List<OBSWebSocketResponse>> callBatch(
-      List<OBSWebSocketRequest> requests,
-      {bool haltOnFailure = false,
-      RequestBatchExecutionType executionType =
-          RequestBatchExecutionType.serialRealtime}) async {
-    // Prepare request
+  Future<List<OBSWebSocketResponse>> sendBatchRequest(
+    List<OBSWebSocketRequest> requests, {
+    bool haltOnFailure = false,
+    RequestBatchExecutionType executionType =
+        RequestBatchExecutionType.serialRealtime,
+    bool serializeResults = true,
+  }) async {
     assert(requests.isNotEmpty);
+
+    // Prepare requests
+    Map<String, OBSWebSocketRequest> requestIds = {};
+    List<RequestOp> requestOpCodes = [];
+    for (OBSWebSocketRequest req in requests) {
+      String requestId = _uuid.v4();
+      requestOpCodes.add(RequestOp.create(
+        requestType: req.type,
+        requestId: requestId,
+        requestData: req.data,
+      ));
+      requestIds[requestId] = req;
+    }
+
+    // Send batch request
     String requestId = _uuid.v4(); // Generate ID for request
-    List<RequestOp> requestOpCodes = requests
-        .map((req) => RequestOp.create(
-              requestType: req.type,
-              requestId: requestId,
-              requestData: req.data,
-            ))
-        .toList(); // Create request ops
     RequestBatchOp batchRequest = RequestBatchOp.create(
       requestId: requestId,
       haltOnFailure: haltOnFailure,
@@ -188,7 +199,19 @@ class OBSWebSocket {
             (op as RequestBatchResponseOp).requestId == requestId)
         .timeout(Duration(seconds: requestTimeout)) as RequestBatchResponseOp;
 
-    // Return
+    // Serialize results
+    if (serializeResults) {
+      for (var res in responseOp.results) {
+        OBSWebSocketRequest? req = requestIds[res.requestId];
+        if (req != null) {
+          req.response = req.serializeResponse(
+              res.responseData ?? Map<String, dynamic>.from({}),
+              res.requestStatus);
+        }
+      }
+    }
+
+    // Return responses
     return responseOp.results
         .map<OBSWebSocketResponse>((res) =>
             OBSWebSocketResponse(res.responseData ?? {}, res.requestStatus))
@@ -197,13 +220,20 @@ class OBSWebSocket {
 
   static String createAuthenticationString(
       String password, String challenge, String salt) {
-    // Concatenate the websocket password with the salt provided by the server (password + salt)
+    // Concatenate the websocket password with the salt provided by the server
+    // (password + salt)
     String concat = password + salt;
-    // Generate an SHA256 binary hash of the result and base64 encode it, known as a base64 secret.
+
+    // Generate an SHA256 binary hash of the result and base64 encode it,
+    // known as a base64 secret.
     String secret = base64.encode(sha256.convert(utf8.encode(concat)).bytes);
-    // Concatenate the base64 secret with the challenge sent by the server (base64_secret + challenge)
+
+    // Concatenate the base64 secret with the challenge sent by the server
+    // (base64_secret + challenge)
     concat = secret + challenge;
-    // Generate a binary SHA256 hash of that result and base64 encode it. You now have your authentication string.
+
+    // Generate a binary SHA256 hash of that result and base64 encode it.
+    // You now have your authentication string.
     String authentication =
         base64.encode(sha256.convert(utf8.encode(concat)).bytes);
 
