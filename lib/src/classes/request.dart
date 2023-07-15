@@ -1,8 +1,8 @@
 import 'serializable.dart';
 import 'response.dart';
-import '../protocol/responses.dart';
 
-class OBSWebSocketRequest<T extends OBSWebSocketResponse> extends Serializable {
+abstract class OBSWebSocketRequest<T extends OBSWebSocketResponse>
+    extends Serializable {
   final String type;
 
   T? response;
@@ -12,13 +12,4 @@ class OBSWebSocketRequest<T extends OBSWebSocketResponse> extends Serializable {
 
   OBSWebSocketResponse serializeResponse(data, status) =>
       OBSWebSocketResponse(data, status);
-}
-
-/// Yeet
-class GetSceneListRequest extends OBSWebSocketRequest<GetSceneListResponse> {
-  GetSceneListRequest() : super("GetSceneList");
-
-  @override
-  GetSceneListResponse serializeResponse(data, status) =>
-      GetSceneListResponse(data, status);
 }

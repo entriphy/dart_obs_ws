@@ -6,6 +6,10 @@ def camel_to_snake(str):
 def pascal_to_camel(str) -> str:
     return str[0].lower() + str[1:]
 
+def snake_to_camel(str):
+    split = str.split("_")
+    return split[0] + "".join(s.title() for s in split[1:])
+
 def write(f: io.FileIO, text: str = "", indent: int = 0, newlines: int = 1, comment: bool = False):
     f.write("  " * indent + ("/// " if comment else "") + text + "\n" * newlines)
 
@@ -19,24 +23,37 @@ if __name__ == "__main__":
     write(f_requests, "import '../obs_websocket.dart';", newlines=2)
     write(f_requests, "extension Requests on OBSWebSocket {")
 
+    f_req_classes = open("lib/src/protocol/request_classes.dart", "w")
+    write(f_req_classes, "import '../classes/request.dart';")
+    write(f_req_classes, "import '../classes/response.dart';")
+    write(f_req_classes, "import 'responses.dart';", newlines=2)
+
     f_classes = open("lib/src/protocol/responses.dart", "w")
     write(f_classes, "import '../classes/response.dart';", newlines=2)
 
     for request in protocol["requests"]:
-        has_return_fields = len(request["responseFields"]) > 0 
-        return_type = "OBSWebSocketResponse" if not has_return_fields else request["requestType"] + "Response"
-        function_name = pascal_to_camel(request["requestType"])
+        has_return_fields = len(request["responseFields"]) > 0
+        request_type = request["requestType"]
+        request_class = request_type + "Request"
+        response_class = "OBSWebSocketResponse" if not has_return_fields else request_type + "Response"
+        function_name = pascal_to_camel(request_type)
         params = []
         request_params = []
+        params_fields = {}
+        params_constructor = []
         if len(request["requestFields"]) > 0:
             for field in request["requestFields"]:
                 field_name = field["valueName"]
-                field_type = fix_field_type(field['valueType'])
                 if "." in field_name:
                     continue
+                field_type = fix_field_type(field['valueType'])
                 params.append(f"{'required ' if not field['valueOptional'] else ''}{field_type}{'?' if field['valueOptional'] and field_type != 'dynamic' else ''} {field_name}")
                 request_params.append(f"{'if (%s != null) ' % field_name if field['valueOptional'] else ''}\"{field_name}\": {field_name}")
+                params_fields[field_name] = f"final {field_type}{'?' if field['valueOptional'] and field_type != 'dynamic' else ''} {field_name};"
+                params_constructor.append(f"{'required ' if not field['valueOptional'] else ''}this.{field_name}")
         params_str = "" if len(params) == 0 else "{" + ", ".join(params) + "}"
+
+        # requests.dart
 
         for desc in request["description"].split("\n"):
             write(f_requests, desc, indent=1, comment=True)
@@ -55,11 +72,37 @@ if __name__ == "__main__":
 
         if request["deprecated"]:
             write(f_requests, "@Deprecated(\"Deprecated\")", indent=1)
-        write(f_requests, f"Future<{return_type}> {function_name}({params_str}) async => ", indent=1, newlines=0)
+        write(f_requests, f"Future<{response_class}> {function_name}({params_str}) async => ", indent=1, newlines=0)
         if has_return_fields:
-            write(f_requests, f"{return_type}.fromResponse(await call(\"{request['requestType']}\"{', {%s}' % ', '.join(request_params) if len(request_params) > 0 else ''}));", newlines=2)
+            write(f_requests, f"{response_class}.fromResponse(await call(\"{request['requestType']}\"{', {%s}' % ', '.join(request_params) if len(request_params) > 0 else ''}));", newlines=2)
         else:
             write(f_requests, f"call(\"{request['requestType']}\"{', {%s}' % ', '.join(request_params) if len(request_params) > 0 else ''});", newlines=2)
+
+        # request_classes.dart
+
+        for desc in request["description"].split("\n"):
+            write(f_req_classes, desc, comment=True)
+        write(f_req_classes, "* Category: " + request["category"].capitalize(), comment=True)
+        write(f_req_classes, "* Complexity: " + str(request["complexity"]) + "/5", comment=True)
+        write(f_req_classes, "* RPC Version: " + request["rpcVersion"], comment=True)
+        write(f_req_classes, "* Initial Version: " + request["initialVersion"], comment=True)
+        if request["deprecated"]:
+            write(f_req_classes, "@Deprecated(\"Deprecated\")", indent=1)
+        write(f_req_classes, f"class {request_class} extends OBSWebSocketRequest<{response_class}> {{")
+        for field in request["requestFields"]:
+            if field["valueName"] not in params_fields:
+                continue
+            write(f_req_classes, field['valueDescription'].replace(chr(92), ' '), indent=1, comment=True)
+            write(f_req_classes, params_fields[field["valueName"]], indent=1, newlines=2)
+        params_constructor_str = "" if len(params_constructor) == 0 else "{" + ", ".join(params_constructor) + "}"
+        params_super_str = "{" + ", ".join([f'"{field}": {field}' for field in params_fields.keys()]) + "}"
+        write(f_req_classes, f"{request_class}({params_constructor_str}) : super(\"{request_type}\", {params_super_str});", indent=1, newlines=2)
+        write(f_req_classes, f"@override", indent=1)
+        write(f_req_classes, f"{response_class} serializeResponse(data, status) => {response_class}(data, status);", indent=1)
+        write(f_req_classes, "}", newlines=2)
+
+
+        # responses.dart
 
         if len(request["responseFields"]) > 0:
             write(f_classes, f"/// Response for {request['requestType']}")
@@ -142,3 +185,5 @@ if __name__ == "__main__":
         write(f_events, f"\"{event}\": {event}Event.new,", indent=1)
     write(f_events, "};", newlines=2)
     f_events.close()
+
+# dear god i hate this
