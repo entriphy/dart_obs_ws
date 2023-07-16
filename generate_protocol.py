@@ -118,6 +118,7 @@ if __name__ == "__main__":
     write(f_requests, "}")
 
     f_requests.close()
+    f_req_classes.close()
     f_classes.close()
 
     f_enums = open("lib/src/protocol/enums.dart", "w")
@@ -175,12 +176,12 @@ if __name__ == "__main__":
             write(f_events, field["valueDescription"].replace("\n", " "), indent=1, comment=True)
             field_type = fix_field_type(field['valueType'])
             write(f_events, f"{field_type} get {field['valueName']} => data[\"{field['valueName']}\"]{'.cast<%s>()' % re.findall(r'List<(.+)>', field_type)[0] if field_type.startswith('List<') else ''};", indent=1, newlines=2)
-        write(f_events, f"{event['eventType']}Event(super.data);", indent=1)
+        write(f_events, f"{event['eventType']}Event(super.type, super.data);", indent=1)
         write(f_events, "}", newlines=2)
         events.append(event["eventType"])
 
     write(f_events, "// ignore: constant_identifier_names")
-    write(f_events, "const Map<String, OBSWebSocketEvent Function(Map<String, dynamic> data)> EventMap = {")
+    write(f_events, "const Map<String, OBSWebSocketEvent Function(String type, Map<String, dynamic> data)> eventMap = {")
     for event in events:
         write(f_events, f"\"{event}\": {event}Event.new,", indent=1)
     write(f_events, "};", newlines=2)

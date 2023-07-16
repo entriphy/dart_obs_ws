@@ -54,8 +54,16 @@ class OBSWebSocket {
     if (!_opStreamController.isClosed) {
       _opStreamController.add(op);
       if (op is EventOpCode) {
-        OBSWebSocketEvent event = eventMap[op.eventType]!(op.eventData ?? {});
-        if (!_eventStreamController.isClosed) _eventStreamController.add(event);
+        OBSWebSocketEvent event;
+        if (eventMap.containsKey(op.eventType)) {
+          event = eventMap[op.eventType]!(op.eventType, op.eventData ?? {});
+        } else {
+          event = OBSWebSocketEvent(op.eventType, op.eventData ?? {});
+        }
+
+        if (!_eventStreamController.isClosed) {
+          _eventStreamController.add(event);
+        }
       }
     }
   }
@@ -100,7 +108,7 @@ class OBSWebSocket {
       [Map<String, dynamic>? requestData]) async {
     // Prepare request
     String requestId = _uuid.v4(); // Generate ID for request
-    RequestOp request = RequestOp.create(
+    RequestOpCode request = RequestOpCode.create(
       requestType: requestType,
       requestId: requestId,
       requestData: requestData,
@@ -108,11 +116,11 @@ class OBSWebSocket {
     sendOpCode(request); // Send request op
 
     // Wait for response with matching ID
-    RequestResponseOp responseOp = await opStream
+    RequestResponseOpCode responseOp = await opStream
         .firstWhere((op) =>
             op.code == WebSocketOpCode.requestResponse &&
-            (op as RequestResponseOp).requestId == requestId)
-        .timeout(Duration(seconds: requestTimeout)) as RequestResponseOp;
+            (op as RequestResponseOpCode).requestId == requestId)
+        .timeout(Duration(seconds: requestTimeout)) as RequestResponseOpCode;
 
     // Throw exception if result is false
     if (!responseOp.requestStatus.result) {
