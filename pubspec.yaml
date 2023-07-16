@@ -1,9 +1,11 @@
 name: obs_ws
-description: Dart library for obs-websocket
+description: Cross-platform Dart library for the obs-websocket plugin (v5.0.0+) for OBS Studio
 version: 1.0.0
+homepage: https://github.com/entriphy/dart_obs_ws
+repostiory: https://github.com/entriphy/dart_obs_ws
 
 environment:
-  sdk: '>=2.17.6 <3.0.0'
+  sdk: '>=2.17.6 <4.0.0'
 
 dependencies:
   crypto: 3.0.3 # Generating hash for password
