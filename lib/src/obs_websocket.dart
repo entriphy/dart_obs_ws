@@ -53,8 +53,8 @@ class OBSWebSocket {
     OpCode op = OpCode.opCodeMap[opCode]!(d["d"]);
     if (!_opStreamController.isClosed) {
       _opStreamController.add(op);
-      if (op is EventOp) {
-        OBSWebSocketEvent event = EventMap[op.eventType]!(op.eventData ?? {});
+      if (op is EventOpCode) {
+        OBSWebSocketEvent event = eventMap[op.eventType]!(op.eventData ?? {});
         if (!_eventStreamController.isClosed) _eventStreamController.add(event);
       }
     }
@@ -130,7 +130,7 @@ class OBSWebSocket {
       OBSWebSocketRequest request) async {
     // Prepare request
     String requestId = _uuid.v4(); // Generate ID for request
-    RequestOp requestOp = RequestOp.create(
+    RequestOpCode requestOp = RequestOpCode.create(
       requestType: request.type,
       requestId: requestId,
       requestData: request.data,
@@ -138,11 +138,11 @@ class OBSWebSocket {
     sendOpCode(requestOp); // Send request op
 
     // Wait for response with matching ID
-    RequestResponseOp responseOp = await opStream
+    RequestResponseOpCode responseOp = await opStream
         .firstWhere((op) =>
             op.code == WebSocketOpCode.requestResponse &&
-            (op as RequestResponseOp).requestId == requestId)
-        .timeout(Duration(seconds: requestTimeout)) as RequestResponseOp;
+            (op as RequestResponseOpCode).requestId == requestId)
+        .timeout(Duration(seconds: requestTimeout)) as RequestResponseOpCode;
 
     // Throw exception if result is false
     if (!responseOp.requestStatus.result) {
@@ -171,10 +171,10 @@ class OBSWebSocket {
 
     // Prepare requests
     Map<String, OBSWebSocketRequest> requestIds = {};
-    List<RequestOp> requestOpCodes = [];
+    List<RequestOpCode> requestOpCodes = [];
     for (OBSWebSocketRequest req in requests) {
       String requestId = _uuid.v4();
-      requestOpCodes.add(RequestOp.create(
+      requestOpCodes.add(RequestOpCode.create(
         requestType: req.type,
         requestId: requestId,
         requestData: req.data,
@@ -184,7 +184,7 @@ class OBSWebSocket {
 
     // Send batch request
     String requestId = _uuid.v4(); // Generate ID for request
-    RequestBatchOp batchRequest = RequestBatchOp.create(
+    RequestBatchOpCode batchRequest = RequestBatchOpCode.create(
       requestId: requestId,
       haltOnFailure: haltOnFailure,
       executionType: executionType,
@@ -193,11 +193,12 @@ class OBSWebSocket {
     sendOpCode(batchRequest); // Send the request op
 
     // Wait for response with matching ID
-    RequestBatchResponseOp responseOp = await opStream
-        .firstWhere((op) =>
-            op.code == WebSocketOpCode.requestBatchResponse &&
-            (op as RequestBatchResponseOp).requestId == requestId)
-        .timeout(Duration(seconds: requestTimeout)) as RequestBatchResponseOp;
+    RequestBatchResponseOpCode responseOp = await opStream
+            .firstWhere((op) =>
+                op.code == WebSocketOpCode.requestBatchResponse &&
+                (op as RequestBatchResponseOpCode).requestId == requestId)
+            .timeout(Duration(seconds: requestTimeout))
+        as RequestBatchResponseOpCode;
 
     // Serialize results
     if (serializeResults) {

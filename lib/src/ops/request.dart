@@ -3,7 +3,7 @@ import 'ops.dart';
 
 /// Client is making a request to obs-websocket. Eg get current scene, create
 /// source.
-class RequestOp extends OpCode {
+class RequestOpCode extends OpCode {
   String get requestType => data["requestType"];
   String get requestId => data["requestId"];
   Map<String, dynamic>? get requestData => data["requestData"];
@@ -11,8 +11,8 @@ class RequestOp extends OpCode {
   @override
   WebSocketOpCode get code => WebSocketOpCode.request;
 
-  RequestOp(super.data);
-  RequestOp.create(
+  RequestOpCode(super.data);
+  RequestOpCode.create(
       {required String requestType,
       required String requestId,
       Map<String, dynamic>? requestData})

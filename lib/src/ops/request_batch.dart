@@ -3,25 +3,25 @@ import 'ops.dart';
 
 /// Client is making a batch of requests for obs-websocket.
 /// Requests are processed serially (in order) by the server.
-class RequestBatchOp extends OpCode {
+class RequestBatchOpCode extends OpCode {
   String get requestId => data["requestId"];
   bool get haltOnFailure => data["haltOnFailure"] ?? false;
   RequestBatchExecutionType get executionType =>
       RequestBatchExecutionType.fromInt(data["executionType"] ??
           RequestBatchExecutionType.serialRealtime.value);
-  List<RequestOp> get requests =>
-      data["requests"].map((d) => RequestOp(d)).toList();
+  List<RequestOpCode> get requests =>
+      data["requests"].map((d) => RequestOpCode(d)).toList();
 
   @override
   WebSocketOpCode get code => WebSocketOpCode.requestBatch;
 
-  RequestBatchOp(super.data);
-  RequestBatchOp.create(
+  RequestBatchOpCode(super.data);
+  RequestBatchOpCode.create(
       {required String requestId,
       bool haltOnFailure = false,
       RequestBatchExecutionType executionType =
           RequestBatchExecutionType.serialRealtime,
-      required List<RequestOp> requests})
+      required List<RequestOpCode> requests})
       : super({
           "requestId": requestId,
           "haltOnFailure": haltOnFailure,

@@ -4,7 +4,7 @@ import '../protocol/enums.dart';
 import 'ops.dart';
 
 /// obs-websocket is responding to a request coming from a client.
-class RequestResponseOp extends OpCode {
+class RequestResponseOpCode extends OpCode {
   String get requestType => data["requestType"];
   String get requestId => data["requestId"];
   RequestResponseStatus get requestStatus =>
@@ -14,7 +14,7 @@ class RequestResponseOp extends OpCode {
   @override
   WebSocketOpCode get code => WebSocketOpCode.requestResponse;
 
-  RequestResponseOp(super.data);
+  RequestResponseOpCode(super.data);
 }
 
 class RequestResponseStatus extends Serializable {

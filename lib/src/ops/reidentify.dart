@@ -3,13 +3,13 @@ import 'ops.dart';
 
 /// Sent at any time after initial identification to update the provided session
 /// parameters.
-class ReidentifyOp extends OpCode {
+class ReidentifyOpCode extends OpCode {
   int get eventSubscriptions => data["eventSubscriptions"];
 
   @override
   WebSocketOpCode get code => WebSocketOpCode.reidentify;
 
-  ReidentifyOp(super.data);
-  ReidentifyOp.create(int eventSubscriptions)
+  ReidentifyOpCode(super.data);
+  ReidentifyOpCode.create(int eventSubscriptions)
       : super({"eventSubscriptions": eventSubscriptions});
 }
