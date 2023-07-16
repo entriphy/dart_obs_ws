@@ -32,14 +32,14 @@ class OBSWebSocket {
 
   // Streams and stuff
   late Uuid _uuid;
-  late StreamController<OpCode> _opStreamController;
+  late StreamController<OpCode> _opCodeStreamController;
   late StreamController<OBSWebSocketEvent> _eventStreamController;
-  Stream<OpCode> get opStream => _opStreamController.stream;
+  Stream<OpCode> get opCodeStream => _opCodeStreamController.stream;
   Stream<OBSWebSocketEvent> get eventStream => _eventStreamController.stream;
 
   OBSWebSocket._(this.ws, this.msgpack) {
     _uuid = Uuid();
-    _opStreamController = StreamController.broadcast();
+    _opCodeStreamController = StreamController.broadcast();
     _eventStreamController = StreamController.broadcast();
     ws.stream.asBroadcastStream().listen(_listener, onDone: disconnect);
   }
@@ -51,8 +51,8 @@ class OBSWebSocket {
     d["d"] = _castMap(d["d"]);
     WebSocketOpCode opCode = WebSocketOpCode.fromInt(d["op"]);
     OpCode op = OpCode.opCodeMap[opCode]!(d["d"]);
-    if (!_opStreamController.isClosed) {
-      _opStreamController.add(op);
+    if (!_opCodeStreamController.isClosed) {
+      _opCodeStreamController.add(op);
       if (op is EventOpCode) {
         OBSWebSocketEvent event;
         if (eventMap.containsKey(op.eventType)) {
@@ -68,33 +68,111 @@ class OBSWebSocket {
     }
   }
 
+  /// Connects to obs-websocket using the given [host] and [port].
+  ///
+  /// If [ssl] is set to true, `wss://` will be used instead of `ws://`.
+  ///
+  /// See docs for [connectUri] for info about other parameters.
   static Future<OBSWebSocket> connect(String host,
-      {int port = 4455, bool ssl = false, bool msgpack = false}) {
+      {int port = 4455,
+      bool ssl = false,
+      bool msgpack = false,
+      bool auto = true,
+      String? password,
+      List<EventSubscription>? subscriptions}) {
     Uri uri = Uri.parse("ws${ssl ? 's' : ''}://$host:$port");
-    return connectUri(uri, msgpack: msgpack);
+    return connectUri(uri,
+        msgpack: msgpack,
+        auto: auto,
+        password: password,
+        subscriptions: subscriptions);
   }
 
+  /// Connects to obs-websocket using a [Uri].
+  ///
+  /// If [msgpack] is set to true, messages will be sent as binary rather than
+  /// JSON. Might have a performance impact.
+  /// (NOTE: this currently does not work)
+  ///
+  /// [password] is the password to use when authenticating to the host if
+  /// [auto] is set to true. [subscriptions] is the list of event subscriptions
+  /// to subscribe to if [auto] is set to true.
+  ///
+  /// If [auto] is set to true, the function will automatically wait for
+  /// [WebSocketOpCode.hello], identify/authenticate the client by sending
+  /// [WebSocketOpCode.identify], and wait for [WebSocketOpCode.identified].
+  /// An [OBSWebSocketAuthException] will be thrown if [password] is
+  /// `null` when the host requires a password or if [password] is incorrect.
   static Future<OBSWebSocket> connectUri(Uri uri,
-      {bool msgpack = false}) async {
+      {bool msgpack = false,
+      bool auto = true,
+      String? password,
+      List<EventSubscription>? subscriptions}) async {
     WebSocketChannel ws = WebSocketChannel.connect(uri,
         protocols: [!msgpack ? "obswebsocket.json" : "obswebsocket.msgpack"]);
     OBSWebSocket obs = OBSWebSocket._(ws, msgpack);
+
+    if (auto) {
+      HelloOpCode hello = await obs.waitForOpCode(WebSocketOpCode.hello);
+      String? auth; // Authentication string (if required)
+      if (hello.authentication != null) {
+        // Authentication needed; create authentication string
+        if (password == null) {
+          throw OBSWebSocketAuthException(
+              "The host requires a password, but no password was provided.");
+        }
+        auth = OBSWebSocket.createAuthenticationString(
+          password,
+          hello.authentication!.challenge,
+          hello.authentication!.salt,
+        );
+      }
+
+      // Get integer for event subscriptions
+      int eventSubs = 0;
+      if (subscriptions != null) {
+        for (var sub in subscriptions) {
+          eventSubs |= sub.value;
+        }
+      }
+
+      // Identify and authenticate self
+      obs.sendOpCode(IdentifyOpCode.create(
+        rpcVersion: hello.rpcVersion,
+        authentication: auth,
+        eventSubscriptions: eventSubs,
+      ));
+
+      try {
+        await obs.waitForOpCode(WebSocketOpCode.identified);
+      } catch (e) {
+        if (obs.closeCode == WebSocketCloseCode.authenticationFailed) {
+          throw OBSWebSocketAuthException("The password provided is incorrect");
+        } else {
+          rethrow; // Most likely not an obs-websocket related error
+        }
+      }
+    }
+
     return obs;
   }
 
+  /// Disconnects from obs-websocket and closes all event streams.
   Future<void> disconnect() async {
-    await _opStreamController.close();
+    await _opCodeStreamController.close();
     await _eventStreamController.close();
     await ws.sink.close();
   }
 
+  /// Waits for an opcode from the host and returns it once received.
   Future<T> waitForOpCode<T extends OpCode>(WebSocketOpCode code,
       [int timeout = 15]) async {
-    return (await opStream
+    return (await opCodeStream
         .firstWhere((opcode) => opcode.code == code)
         .timeout(Duration(seconds: timeout))) as T;
   }
 
+  /// Sends an opcode to the host.
   void sendOpCode(OpCode op) {
     Map<String, dynamic> data = {"op": op.code.value, "d": op.data};
     if (msgpack) {
@@ -104,6 +182,7 @@ class OBSWebSocket {
     }
   }
 
+  /// Calls a request and returns the response.
   Future<OBSWebSocketResponse> call(String requestType,
       [Map<String, dynamic>? requestData]) async {
     // Prepare request
@@ -116,7 +195,7 @@ class OBSWebSocket {
     sendOpCode(request); // Send request op
 
     // Wait for response with matching ID
-    RequestResponseOpCode responseOp = await opStream
+    RequestResponseOpCode responseOp = await opCodeStream
         .firstWhere((op) =>
             op.code == WebSocketOpCode.requestResponse &&
             (op as RequestResponseOpCode).requestId == requestId)
@@ -134,6 +213,10 @@ class OBSWebSocket {
         responseOp.responseData ?? {}, responseOp.requestStatus);
   }
 
+  /// Sends a request to the host using an [OBSWebSocketRequest] object.
+  ///
+  /// The type parameter is the response wrapper class to use when returning
+  /// the response.
   Future<T> sendRequest<T extends OBSWebSocketResponse>(
       OBSWebSocketRequest request) async {
     // Prepare request
@@ -146,7 +229,7 @@ class OBSWebSocket {
     sendOpCode(requestOp); // Send request op
 
     // Wait for response with matching ID
-    RequestResponseOpCode responseOp = await opStream
+    RequestResponseOpCode responseOp = await opCodeStream
         .firstWhere((op) =>
             op.code == WebSocketOpCode.requestResponse &&
             (op as RequestResponseOpCode).requestId == requestId)
@@ -168,6 +251,14 @@ class OBSWebSocket {
     return response;
   }
 
+  /// Sends a batch of requests to the host.
+  ///
+  /// [haltOnFailure] and [executionType] determines the behaviour of the way
+  /// the requests are executed as specified in the obs-websocket protocol.
+  ///
+  /// If [serializeResults] is set to true, each response will be mapped and
+  /// [OBSWebSocketRequest.response] will get set for each request specified
+  /// in the [requests] list.
   Future<List<OBSWebSocketResponse>> sendBatchRequest(
     List<OBSWebSocketRequest> requests, {
     bool haltOnFailure = false,
@@ -201,7 +292,7 @@ class OBSWebSocket {
     sendOpCode(batchRequest); // Send the request op
 
     // Wait for response with matching ID
-    RequestBatchResponseOpCode responseOp = await opStream
+    RequestBatchResponseOpCode responseOp = await opCodeStream
             .firstWhere((op) =>
                 op.code == WebSocketOpCode.requestBatchResponse &&
                 (op as RequestBatchResponseOpCode).requestId == requestId)
@@ -227,6 +318,10 @@ class OBSWebSocket {
         .toList();
   }
 
+  /// Creates the authentication string given a password and the challenge/salt
+  /// from a [HelloOpCode].
+  ///
+  /// Mainly for use with [IdentifyOpCode.authentication].
   static String createAuthenticationString(
       String password, String challenge, String salt) {
     // Concatenate the websocket password with the salt provided by the server
@@ -248,6 +343,15 @@ class OBSWebSocket {
 
     return authentication;
   }
+}
+
+class OBSWebSocketAuthException {
+  String error;
+
+  OBSWebSocketAuthException(this.error);
+
+  @override
+  String toString() => "The password provided is incorrect";
 }
 
 class OBSWebSocketRequestException {
