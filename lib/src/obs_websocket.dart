@@ -260,7 +260,7 @@ class OBSWebSocket {
   /// [OBSWebSocketRequest.response] will get set for each request specified
   /// in the [requests] list.
   Future<List<OBSWebSocketResponse>> sendBatchRequest(
-    List<OBSWebSocketRequest> requests, {
+    Iterable<OBSWebSocketRequest> requests, {
     bool haltOnFailure = false,
     RequestBatchExecutionType executionType =
         RequestBatchExecutionType.serialRealtime,
