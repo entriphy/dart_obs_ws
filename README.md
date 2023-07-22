@@ -1,5 +1,5 @@
 # obs_ws
-This Dart library provides a way to communicate with OBS Studio through the [obs-websocket plugin](https://github.com/obsproject/obs-websocket).
+This Dart library provides a way to communicate with OBS Studio over the [obs-websocket plugin](https://github.com/obsproject/obs-websocket) protocol.
 
 All requests, responses, events, and enums are auto-generated acccording to the [obs-websocket protocol](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md) using the `generate_protocol.py` script. All request/response names and fields are the same as specified in the protocol or were slightly changed to fit Dart function/class naming conventions (i.e. PascalCase to camelCase for request helper functions).
 

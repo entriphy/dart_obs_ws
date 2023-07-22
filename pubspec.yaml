@@ -1,16 +1,16 @@
 name: obs_ws
-description: Cross-platform Dart library for the obs-websocket plugin (v5.0.0+) for OBS Studio
+description: Dart library to remotely control OBS Studio over the obs-websocket plugin (v5.0.0+) protocol
 version: 1.0.0
 homepage: https://github.com/entriphy/dart_obs_ws
-repostiory: https://github.com/entriphy/dart_obs_ws
+repository: https://github.com/entriphy/dart_obs_ws
 
 environment:
-  sdk: '>=2.17.6 <4.0.0'
+  sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
-  crypto: 3.0.3 # Generating hash for password
-  uuid: 3.0.7 # Generating request IDs
-  web_socket_channel: 2.4.0 # Cross-platform WebSocket support
+  crypto: ^3.0.0 # Generating hash for password
+  uuid: ^3.0.0 # Generating request IDs
+  web_socket_channel: ^2.4.0 # Cross-platform WebSocket support
 
 dev_dependencies:
   lints: ^2.0.0

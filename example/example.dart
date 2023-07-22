@@ -21,11 +21,13 @@ void main() async {
   });
 
   // Send requests and print responses
-  // Note that these heler functions are provided as an extension on [OBSWebSocket]
-  print("GetSceneList: ${(await obs.getSceneList()).scenes}");
-  print(
-      "GetCurrentProgramScene: ${(await obs.getCurrentProgramScene()).currentProgramSceneName}");
-  print("GetProfileList: ${(await obs.getProfileList()).profiles}");
+  // Note that these helper functions are provided as an extension on [OBSWebSocket]
+  var sceneList = await obs.getSceneList();
+  var currentScene = await obs.getCurrentProgramScene();
+  var profileList = await obs.getProfileList();
+  print("GetSceneList: ${sceneList.scenes}");
+  print("GetCurrentProgramScene: ${currentScene.currentProgramSceneName}");
+  print("GetProfileList: ${profileList.profiles}");
   await Future.delayed(Duration(seconds: 2));
 
   // Second method to send requests
@@ -44,13 +46,15 @@ void main() async {
   var req1 = GetSceneListRequest();
   var req2 = GetStudioModeEnabledRequest();
   var req3 = CreateSceneRequest(sceneName: "Test");
-  var res = await obs.sendBatchRequest([req1, req2, req3],
+  var batchReq = await obs.sendBatchRequest([req1, req2, req3],
       executionType: RequestBatchExecutionType.serialRealtime);
-  print("Request 1 (GetSceneList): ${req1.response?.scenes}");
-  print(
-      "Request 2 (GetStudioModeEnabled): ${req2.response?.studioModeEnabled}");
-  print("Request 3 (CreateScene) Status: ${req3.response?.status.code.name}");
-  print("Responses: ${res.toString()}");
+  var res1 = req1.response!;
+  var res2 = req2.response!;
+  var res3 = req3.response!;
+  print("Request 1 (GetSceneList): ${res1.scenes}");
+  print("Request 2 (GetStudioModeEnabled): ${res2.studioModeEnabled}");
+  print("Request 3 (CreateScene) Status: ${res3.status.code.name}");
+  print("Responses: ${batchReq.toString()}");
   await Future.delayed(Duration(seconds: 2));
 
   // Disconnect from obs-websocket after 15 seconds
