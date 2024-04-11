@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   crypto: ^3.0.0 # Generating hash for password
-  uuid: ^3.0.0 # Generating request IDs
+  uuid: ^4.0.0 # Generating request IDs
   web_socket_channel: ^2.4.0 # Cross-platform WebSocket support
 
 dev_dependencies:
