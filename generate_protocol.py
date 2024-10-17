@@ -112,7 +112,7 @@ if __name__ == "__main__":
                 field_type = fix_field_type(field['valueType'])
                 write(f_classes, field["valueDescription"], indent=1, comment=True)
                 write(f_classes, f"{field_type}{'?' if 'null' in field['valueDescription'] and field_type != 'dynamic' else ''} get {field_name} => data[\"{field_name}\"]{'.cast<%s>()' % re.findall(r'List<(.+)>', field_type)[0] if field_type.startswith('List<') else ''};", indent=1, newlines=2)
-            write(f_classes, f"{request['requestType']}Response(data, status) : super(data, status);", indent=1)
+            write(f_classes, f"{request['requestType']}Response(super.data, super.status);", indent=1)
             write(f_classes, f"{request['requestType']}Response.fromResponse(resp) : this(resp.data, resp.status);", indent=1)
             write(f_classes, "}", newlines=2)
     write(f_requests, "}")
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     events = []
     for event in protocol["events"]:
         for desc in event["description"].split("\n"):
-            write(f_events, desc, comment=True)
+            write(f_events, desc.replace("TODO", "todo"), comment=True)
         write(f_events, "* Subscription: " + event["eventSubscription"], comment=True)
         write(f_events, "* Category: " + event["category"].capitalize(), comment=True)
         write(f_events, "* Complexity: " + str(event["complexity"]) + "/5", comment=True)
