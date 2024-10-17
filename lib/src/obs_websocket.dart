@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-
-import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'protocol/protocol.dart';
@@ -31,14 +29,14 @@ class OBSWebSocket {
   final bool msgpack;
 
   // Streams and stuff
-  late Uuid _uuid;
+  int counter = 0;
   late StreamController<OpCode> _opCodeStreamController;
   late StreamController<OBSWebSocketEvent> _eventStreamController;
   Stream<OpCode> get opCodeStream => _opCodeStreamController.stream;
   Stream<OBSWebSocketEvent> get eventStream => _eventStreamController.stream;
 
   OBSWebSocket._(this.ws, this.msgpack) {
-    _uuid = Uuid();
+    counter = 0;
     _opCodeStreamController = StreamController.broadcast();
     _eventStreamController = StreamController.broadcast();
     ws.stream.asBroadcastStream().listen(_listener, onDone: disconnect);
@@ -186,7 +184,7 @@ class OBSWebSocket {
   Future<OBSWebSocketResponse> call(String requestType,
       [Map<String, dynamic>? requestData]) async {
     // Prepare request
-    String requestId = _uuid.v4(); // Generate ID for request
+    String requestId = (counter++).toString(); // Generate ID for request
     RequestOpCode request = RequestOpCode.create(
       requestType: requestType,
       requestId: requestId,
@@ -220,7 +218,7 @@ class OBSWebSocket {
   Future<T> sendRequest<T extends OBSWebSocketResponse>(
       OBSWebSocketRequest request) async {
     // Prepare request
-    String requestId = _uuid.v4(); // Generate ID for request
+    String requestId = (counter++).toString(); // Generate ID for request
     RequestOpCode requestOp = RequestOpCode.create(
       requestType: request.type,
       requestId: requestId,
@@ -272,7 +270,7 @@ class OBSWebSocket {
     Map<String, OBSWebSocketRequest> requestIds = {};
     List<RequestOpCode> requestOpCodes = [];
     for (OBSWebSocketRequest req in requests) {
-      String requestId = _uuid.v4();
+      String requestId = (counter++).toString(); // Generate ID for request
       requestOpCodes.add(RequestOpCode.create(
         requestType: req.type,
         requestId: requestId,
@@ -282,7 +280,7 @@ class OBSWebSocket {
     }
 
     // Send batch request
-    String requestId = _uuid.v4(); // Generate ID for request
+    String requestId = (counter++).toString(); // Generate ID for request
     RequestBatchOpCode batchRequest = RequestBatchOpCode.create(
       requestId: requestId,
       haltOnFailure: haltOnFailure,
