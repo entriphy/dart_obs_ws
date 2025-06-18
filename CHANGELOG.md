@@ -1,3 +1,6 @@
+## 1.1.1
+- Update API
+
 ## 1.1.0
 - Use integer counter for request IDs instead of UUID
 - Remove `uuid` dependency
