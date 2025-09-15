@@ -1,4 +1,6 @@
-import requests, re, io
+import io
+import re
+import requests
 
 def camel_to_snake(str):
    return re.sub(r'(?<!^)(?=[A-Z])', '_', str).lower().replace("web_socket", "websocket")
@@ -21,7 +23,7 @@ if __name__ == "__main__":
 
     f_requests = open("lib/src/protocol/requests.dart", "w")
     write(f_requests, "import '../obs_websocket.dart';", newlines=2)
-    write(f_requests, "extension Requests on OBSWebSocket {")
+    write(f_requests, "extension Requests on ObsWebSocket {")
 
     f_req_classes = open("lib/src/protocol/request_classes.dart", "w")
     write(f_req_classes, "import '../classes/request.dart';")
@@ -35,7 +37,7 @@ if __name__ == "__main__":
         has_return_fields = len(request["responseFields"]) > 0
         request_type = request["requestType"]
         request_class = request_type + "Request"
-        response_class = "OBSWebSocketResponse" if not has_return_fields else request_type + "Response"
+        response_class = "ObsWebSocketResponse" if not has_return_fields else request_type + "Response"
         function_name = pascal_to_camel(request_type)
         params = []
         request_params = []
@@ -88,7 +90,7 @@ if __name__ == "__main__":
         write(f_req_classes, "* Initial Version: " + request["initialVersion"], comment=True)
         if request["deprecated"]:
             write(f_req_classes, "@Deprecated(\"Deprecated\")", indent=1)
-        write(f_req_classes, f"class {request_class} extends OBSWebSocketRequest<{response_class}> {{")
+        write(f_req_classes, f"class {request_class} extends ObsWebSocketRequest<{response_class}> {{")
         for field in request["requestFields"]:
             if field["valueName"] not in params_fields:
                 continue
@@ -97,7 +99,7 @@ if __name__ == "__main__":
         params_constructor_str = "" if len(params_constructor) == 0 else "{" + ", ".join(params_constructor) + "}"
         params_super_str = "{" + ", ".join([f'"{field}": {field}' for field in params_fields.keys()]) + "}"
         write(f_req_classes, f"{request_class}({params_constructor_str}) : super(\"{request_type}\", {params_super_str});", indent=1, newlines=2)
-        write(f_req_classes, f"@override", indent=1)
+        write(f_req_classes, "@override", indent=1)
         write(f_req_classes, f"{response_class} serializeResponse(data, status) => {response_class}(data, status);", indent=1)
         write(f_req_classes, "}", newlines=2)
 
@@ -106,7 +108,7 @@ if __name__ == "__main__":
 
         if len(request["responseFields"]) > 0:
             write(f_classes, f"/// Response for {request['requestType']}")
-            write(f_classes, f"class {request['requestType']}Response extends OBSWebSocketResponse {'{'}")
+            write(f_classes, f"class {request['requestType']}Response extends ObsWebSocketResponse {'{'}")
             for field in request["responseFields"]:
                 field_name = field["valueName"]
                 field_type = fix_field_type(field['valueType'])
@@ -124,7 +126,8 @@ if __name__ == "__main__":
     f_enums = open("lib/src/protocol/enums.dart", "w")
     for enum in protocol["enums"]:
         enum_is_string = False
-        write(f_enums, f"enum {enum['enumType']} {'{'}")
+        enum_name = ('Obs' if not enum['enumType'].startswith('Obs') else '') + enum['enumType']
+        write(f_enums, f"enum {enum_name} {'{'}")
         for i, identifier in enumerate(enum["enumIdentifiers"]):
             for desc in identifier["description"].split("\n"):
                 write(f_enums, desc, indent=1, comment=True)
@@ -133,7 +136,7 @@ if __name__ == "__main__":
             if identifier["deprecated"]:
                 write(f_enums, "@Deprecated(\"Deprecated\")", indent=1)
             enum_value = identifier["enumValue"]
-            if type(enum_value) == str:
+            if type(enum_value) is str:
                 if enum_value.startswith("OBS_"):
                     enum_is_string = True
                     enum_value = f'"{enum_value}"'
@@ -151,11 +154,11 @@ if __name__ == "__main__":
             
         write(f_enums, f"final {'String' if enum_is_string else 'int'} value;", indent=1)
         if not enum_is_string:
-            write(f_enums, f"final String name;", indent=1)
-        write(f_enums, f"const {enum['enumType']}(this.value{', this.name' if not enum_is_string else ''});", indent=1)
-        write(f_enums, f"static {enum['enumType']} from{'String' if enum_is_string else 'Int'}({'String' if enum_is_string else 'int'} n) => {enum['enumType']}.values.firstWhere((val) => val.value == n);", indent=1)
+            write(f_enums, "final String name;", indent=1)
+        write(f_enums, f"const {enum_name}(this.value{', this.name' if not enum_is_string else ''});", indent=1)
+        write(f_enums, f"static {enum_name} from{'String' if enum_is_string else 'Int'}({'String' if enum_is_string else 'int'} n) => {enum_name}.values.firstWhere((val) => val.value == n);", indent=1)
         if not enum_is_string:
-            write(f_enums, f"static {enum['enumType']} fromString(String n) => {enum['enumType']}.values.firstWhere((val) => val.name == n);", indent=1)
+            write(f_enums, f"static {enum_name} fromString(String n) => {enum_name}.values.firstWhere((val) => val.name == n);", indent=1)
         write(f_enums, "}", newlines=2)
     f_enums.close()
 
@@ -171,7 +174,7 @@ if __name__ == "__main__":
         write(f_events, "* Complexity: " + str(event["complexity"]) + "/5", comment=True)
         write(f_events, "* RPC Version: " + event["rpcVersion"], comment=True)
         write(f_events, "* Initial Version: " + event["initialVersion"], comment=True)
-        write(f_events, f"class {event['eventType']}Event extends OBSWebSocketEvent {'{'}")
+        write(f_events, f"class {event['eventType']}Event extends ObsWebSocketEvent {'{'}")
         for field in event["dataFields"]:
             write(f_events, field["valueDescription"].replace("\n", " "), indent=1, comment=True)
             field_type = fix_field_type(field['valueType'])
@@ -181,7 +184,7 @@ if __name__ == "__main__":
         events.append(event["eventType"])
 
     write(f_events, "// ignore: constant_identifier_names")
-    write(f_events, "const Map<String, OBSWebSocketEvent Function(String type, Map<String, dynamic> data)> eventMap = {")
+    write(f_events, "const Map<String, ObsWebSocketEvent Function(String type, Map<String, dynamic> data)> eventMap = {")
     for event in events:
         write(f_events, f"\"{event}\": {event}Event.new,", indent=1)
     write(f_events, "};", newlines=2)

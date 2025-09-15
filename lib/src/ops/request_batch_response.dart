@@ -3,14 +3,14 @@ import '../protocol/enums.dart';
 import 'ops.dart';
 
 /// obs-websocket is responding to a request batch coming from the client.
-class RequestBatchResponseOpCode extends OpCode {
+class ObsRequestBatchResponseOp extends ObsOp {
   String get requestId => data["requestId"];
-  List<RequestResponseOpCode> get results => data["results"]
-      .map<RequestResponseOpCode>((d) => RequestResponseOpCode(d))
+  List<ObsRequestResponseOp> get results => data["results"]
+      .map<ObsRequestResponseOp>((d) => ObsRequestResponseOp(d))
       .toList();
 
   @override
-  WebSocketOpCode get code => WebSocketOpCode.requestBatchResponse;
+  ObsWebSocketOpCode get code => ObsWebSocketOpCode.requestBatchResponse;
 
-  RequestBatchResponseOpCode(super.data);
+  ObsRequestBatchResponseOp(super.data);
 }

@@ -5,8 +5,11 @@ const String password = "yeet123";
 
 void main() async {
   // Connect to obs-websocket
-  OBSWebSocket obs = await OBSWebSocket.connect("127.0.0.1",
-      password: password, subscriptions: [EventSubscription.all]);
+  ObsWebSocket obs = await ObsWebSocket.connect("127.0.0.1",
+      password: password, subscriptions: []);
+
+  // Update event subscriptions
+  await obs.reidentify(subscriptions: [ObsEventSubscription.all]);
 
   // Listen for events
   obs.eventStream.listen((event) {
@@ -47,7 +50,7 @@ void main() async {
   var req2 = GetStudioModeEnabledRequest();
   var req3 = CreateSceneRequest(sceneName: "Test");
   var batchReq = await obs.sendBatchRequest([req1, req2, req3],
-      executionType: RequestBatchExecutionType.serialRealtime);
+      executionType: ObsRequestBatchExecutionType.serialRealtime);
   var res1 = req1.response!;
   var res2 = req2.response!;
   var res3 = req3.response!;

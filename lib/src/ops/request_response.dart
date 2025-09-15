@@ -4,23 +4,23 @@ import '../protocol/enums.dart';
 import 'ops.dart';
 
 /// obs-websocket is responding to a request coming from a client.
-class RequestResponseOpCode extends OpCode {
+class ObsRequestResponseOp extends ObsOp {
   String get requestType => data["requestType"];
   String get requestId => data["requestId"];
-  RequestResponseStatus get requestStatus =>
-      RequestResponseStatus(data["requestStatus"]);
+  ObsRequestResponseStatus get requestStatus =>
+      ObsRequestResponseStatus(data["requestStatus"]);
   Map<String, dynamic>? get responseData => data["responseData"];
 
   @override
-  WebSocketOpCode get code => WebSocketOpCode.requestResponse;
+  ObsWebSocketOpCode get code => ObsWebSocketOpCode.requestResponse;
 
-  RequestResponseOpCode(super.data);
+  ObsRequestResponseOp(super.data);
 }
 
-class RequestResponseStatus extends Serializable {
+class ObsRequestResponseStatus extends Serializable {
   bool get result => data["result"];
-  RequestStatus get code => RequestStatus.fromInt(data["code"]);
+  ObsRequestStatus get code => ObsRequestStatus.fromInt(data["code"]);
   String? get comment => data["comment"];
 
-  RequestResponseStatus(super.data);
+  ObsRequestResponseStatus(super.data);
 }

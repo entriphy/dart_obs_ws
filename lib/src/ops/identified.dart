@@ -3,11 +3,11 @@ import 'ops.dart';
 
 /// The identify request was received and validated, and the connection is now
 /// ready for normal operation.
-class IdentifiedOpCode extends OpCode {
+class ObsIdentifiedOp extends ObsOp {
   int get negotiatedRpcVersion => data["negotiatedRpcVersion"];
 
   @override
-  WebSocketOpCode get code => WebSocketOpCode.identified;
+  ObsWebSocketOpCode get code => ObsWebSocketOpCode.identified;
 
-  IdentifiedOpCode(super.data);
+  ObsIdentifiedOp(super.data);
 }

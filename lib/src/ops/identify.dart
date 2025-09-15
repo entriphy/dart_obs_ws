@@ -4,16 +4,16 @@ import 'ops.dart';
 /// Response to `Hello` message, should contain authentication string if
 /// authentication is required, along with PubSub subscriptions and other
 /// session parameters.
-class IdentifyOpCode extends OpCode {
+class ObsIdentifyOp extends ObsOp {
   int get rpcVersion => data["rpcVersion"];
   String? get authentication => data["authentication"];
   int? get eventSubscriptions => data["eventSubscriptions"];
 
   @override
-  WebSocketOpCode get code => WebSocketOpCode.identify;
+  ObsWebSocketOpCode get code => ObsWebSocketOpCode.identify;
 
-  IdentifyOpCode(super.data);
-  IdentifyOpCode.create(
+  ObsIdentifyOp(super.data);
+  ObsIdentifyOp.create(
       {required int rpcVersion,
       String? authentication,
       int? eventSubscriptions})

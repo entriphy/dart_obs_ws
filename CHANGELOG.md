@@ -1,3 +1,9 @@
+## 1.2.0
+- Change class names to follow Dart's naming convention (`OBSWebSocket` -> `ObsWebSocket`)
+- Prefix classes and enums with `Obs`
+- Add `reidentify` function
+- Update API
+
 ## 1.1.1
 - Update API
 

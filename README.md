@@ -20,8 +20,8 @@ import 'package:obs_ws/obs_ws.dart';
 Connect to obs-websocket:
 ```dart
 void main() async {
-  OBSWebSocket obs = await OBSWebSocket.connect("127.0.0.1",
-      password: password, subscriptions: [EventSubscription.all]);
+  ObsWebSocket obs = await ObsWebSocket.connect("127.0.0.1",
+      password: password, subscriptions: [ObsEventSubscription.all]);
 }
 ```
 
@@ -72,30 +72,30 @@ var res = await obs.call("GetInputVolume", {"inputName": "Mic/Aux"});
 print(res.data["inputVolumeDb"])
 ```
 
-If you want to go *even lower level*, you can send and receive all the opcodes manually:
+If you want to go *even lower level*, you can send and receive all the ops manually:
 ```dart
 String requestId = "meow";
 
-RequestOpCode requestOp = RequestOpCode.create(
+ObsRequestOp requestOp = ObsRequestOp.create(
   requestType: "GetInputVolume",
   requestId: requestId,
   requestData: {
     "inputName": "Mic/Aux",
   },
 );
-obs.sendOpCode(requestOp);
+obs.sendOp(requestOp);
 
-RequestResponseOpCode responseOp = await obs.waitForOpCode(WebSocketOpCode.requestResponse);
+ObsRequestResponseOp responseOp = await obs.waitForOpCode(ObsWebSocketOpCode.requestResponse);
 if (responseOp.requestId == requestId &&
       responseOp.requestStatus.code == RequestStatus.success) {
   print(responseOp.responseData!["inputVolumeDb"]);
 }
 
-obs.opCodeStream.listen((event) {
-  if (event.code == WebSocketOpCode.event) {
+obs.opStream.listen((event) {
+  if (event.code == ObsWebSocketOpCode.event) {
     print("Event type: ${event.data['eventType']}");
     print("Event data: ${event.data['eventData']}");
   }
 });
 ```
-The `Hello`-`Identify`-`Identified` process can also be done manually when connecting if `auto` is set to `false` when using `OBSWebSocket.connect` or `OBSWebSocket.connectUri`.
+The `Hello`-`Identify`-`Identified` process can also be done manually when connecting if `auto` is set to `false` when using `ObsWebSocket.connect` or `ObsWebSocket.connectUri`.

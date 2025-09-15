@@ -1,7 +1,7 @@
 import 'serializable.dart';
 
-class OBSWebSocketEvent extends Serializable {
+class ObsWebSocketEvent extends Serializable {
   String type;
 
-  OBSWebSocketEvent(this.type, super.data);
+  ObsWebSocketEvent(this.type, super.data);
 }
